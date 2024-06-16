@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        app:cardCornerRadius="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                app:cardCornerRadius="10dp"
+                android:src="@drawable/ic_welcome"
+                android:id="@+id/feedimg_img"
+                android:padding="5dp"
+                android:layout_width="100dp"
+                android:scaleType="fitCenter"
+                android:layout_height="100dp">
+
+            </ImageView>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:padding="10dp"
+                android:id="@+id/profile_img"
+                android:visibility="gone"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/placeholder_profile">
+
+            </de.hdodenhof.circleimageview.CircleImageView>
+
+            <LinearLayout
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/feedtxt_username"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:fontFamily="@font/poppins_bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="This is the feedback I want to share"
+                    android:maxLines="1">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/feedtxt_rate"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="@font/poppins_bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="5/5"
+                    android:maxLines="1">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/feedtxt_feedback"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="@font/poppins"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="By Malindu Liyanage"
+                    android:textStyle="italic">
+
+                </TextView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

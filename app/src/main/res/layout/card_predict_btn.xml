@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:backgroundTint="@color/colorPrimary"
+    app:cardCornerRadius="25dp"
+    android:layout_margin="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="130dp">
+
+    <LinearLayout
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:fontFamily="@font/poppins_bold"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add a headless\nBuddha Image \nto restore!">
+
+        </TextView>
+
+        <ImageView
+            android:layout_weight="1"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/vector">
+
+        </ImageView>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

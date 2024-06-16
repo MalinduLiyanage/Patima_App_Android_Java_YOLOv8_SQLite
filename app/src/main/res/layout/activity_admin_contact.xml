@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login_register"
+    tools:context=".AdminContactActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_margin="25dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Contact Admin"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="25dp">
+
+        </TextView>
+
+        <EditText
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="25dp"
+            android:id="@+id/name_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bg_edittext"
+            android:fontFamily="@font/poppins"
+            android:inputType="text"
+            android:hint="Name"
+            android:maxLines="1"
+            android:paddingLeft="25dp"
+            android:paddingTop="18dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="18dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="15dp">
+
+        </EditText>
+
+        <EditText
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:id="@+id/email_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bg_edittext"
+            android:fontFamily="@font/poppins"
+            android:inputType="textEmailAddress"
+            android:hint="Email"
+            android:maxLines="1"
+            android:paddingLeft="25dp"
+            android:paddingTop="18dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="18dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="15dp">
+
+        </EditText>
+
+        <EditText
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="15dp"
+            android:id="@+id/msg_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext"
+            android:fontFamily="@font/poppins"
+            android:hint="Your Message"
+            android:maxLength="300"
+            android:paddingLeft="25dp"
+            android:paddingTop="18dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="18dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="15dp">
+
+        </EditText>
+
+        <Button
+            android:layout_margin="25dp"
+            android:id="@+id/admin_submit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_button_primary"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Submit">
+
+        </Button>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

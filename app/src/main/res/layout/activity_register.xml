@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login_register"
+    tools:context=".RegisterActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:gravity="bottom"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Register your Account"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="25dp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ScrollView
+                android:layout_weight="1"
+                android:id="@+id/scrollView2"
+                android:gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="25dp"
+                    android:gravity="bottom"
+                    android:weightSum="5"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp">
+
+                        <EditText
+                            android:layout_weight="1"
+                            android:id="@+id/firstname_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_edittext"
+                            android:fontFamily="@font/poppins"
+                            android:hint="First Name"
+                            android:maxLines="1"
+                            android:paddingLeft="25dp"
+                            android:paddingTop="18dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="18dp"
+                            android:layout_marginRight="5dp"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
+                            android:textSize="15dp">
+
+                        </EditText>
+
+                        <EditText
+                            android:layout_weight="1"
+                            android:id="@+id/lastname_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_edittext"
+                            android:fontFamily="@font/poppins"
+                            android:hint="Last Name"
+                            android:maxLines="1"
+                            android:paddingLeft="25dp"
+                            android:paddingTop="18dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="18dp"
+                            android:layout_marginLeft="5dp"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
+                            android:textSize="15dp">
+
+                        </EditText>
+
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/email_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/bg_edittext"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textEmailAddress"
+                        android:hint="Email"
+                        android:maxLines="1"
+                        android:paddingLeft="25dp"
+                        android:paddingTop="18dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="18dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="15dp">
+
+                    </EditText>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/poppins"
+                        android:textSize="10dp"
+                        android:text="If you are an Archeologist, register your account by adding your Archeologist ID. Else, you will be treated as a general public user.\nNote : Only Archeologists can provide a feedback for generated content."
+                        android:textColor="@color/white"></TextView>
+
+                    <EditText
+                        android:id="@+id/arcid_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/bg_edittext"
+                        android:fontFamily="@font/poppins"
+                        android:hint="Archeological ID (Optional)"
+                        android:maxLines="1"
+                        android:paddingLeft="25dp"
+                        android:paddingTop="18dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="18dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="15dp">
+
+                    </EditText>
+
+                    <EditText
+                        android:id="@+id/pass_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/bg_edittext"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textPassword"
+                        android:hint="Password"
+                        android:maxLines="1"
+                        android:paddingLeft="25dp"
+                        android:paddingTop="18dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="18dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="15dp">
+
+                    </EditText>
+
+                    <EditText
+                        android:id="@+id/passconfirm_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_edittext"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textPassword"
+                        android:hint="Confirm Password"
+                        android:maxLines="1"
+                        android:paddingLeft="25dp"
+                        android:paddingTop="18dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="18dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="15dp">
+
+                    </EditText>
+
+                </LinearLayout>
+
+
+
+            </ScrollView>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/register_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/bg_button_primary"
+            android:fontFamily="@font/poppins_bold"
+            android:text="Register">
+
+        </Button>
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_margin="25dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/login_Txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Already have an account ? Login"
+                android:textColor="@color/white"
+
+                android:layout_marginBottom="15dp"/>
+
+            <TextView
+                android:id="@+id/contact_Txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Have a Problem? Contact Admin"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

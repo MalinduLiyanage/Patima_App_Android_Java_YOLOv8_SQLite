@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/conslayout"
+    android:background="@color/colorPrimary"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ViewComparisonActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                layout="@layout/card_title_bar_comparison" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"
+                        android:id="@+id/base_image"
+                        android:layout_width="300dp"
+                        android:layout_height="500dp"
+                        android:background="@drawable/bg_welcome">
+
+                    </ImageView>
+
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"
+                        android:id="@+id/processed_image"
+                        android:layout_width="300dp"
+                        android:layout_height="500dp"
+                        android:background="@drawable/bg_welcome">
+
+                    </ImageView>
+
+                    <TextView
+                        android:id="@+id/detect_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/poppins"
+                        android:text="Touch on the image to see a comparison of Input and processed images."
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimaryDark">
+
+                    </TextView>
+
+                    <ImageView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/txt_moreoptions">
+
+                    </ImageView>
+
+                    <ImageButton
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/feedback_Btn"
+                        android:background="@drawable/bg_button_feedback"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_width="match_parent"
+                        android:text="Open Camera"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layout_height="wrap_content">
+
+                    </ImageButton>
+
+                    <ImageButton
+                        android:id="@+id/home_Btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/bg_button_backhome"
+                        android:fontFamily="@font/poppins_bold"
+                        android:onClick="selectImage"
+                        android:text="Select from Gallery"
+                        android:textColor="@color/colorPrimaryDark">
+
+                    </ImageButton>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
