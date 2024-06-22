@@ -90,9 +90,84 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="5dp"
                         android:fontFamily="@font/poppins_bold"
-                        android:text="Feedback"
+                        android:text="How well does the generated head matches with the Statue?"
+                        android:textColor="@color/colorPrimaryDark">
+
+                    </TextView>
+
+                    <Spinner
+                        android:id="@+id/spinner_one"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/bg_edittext_feedback"
+                        android:textColor="@color/white"
+                        android:popupBackground="@color/colorPrimaryDark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/options" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="How realiscated is the generated head?"
+                        android:textColor="@color/colorPrimaryDark">
+
+                    </TextView>
+
+                    <Spinner
+                        android:id="@+id/spinner_two"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/bg_edittext_feedback"
+                        android:popupBackground="@color/colorPrimaryDark"
+                        android:textColor="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/options" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="Mention your satisfaction about the Generative Head"
+                        android:textColor="@color/colorPrimaryDark">
+
+                    </TextView>
+
+                    <Spinner
+                        android:id="@+id/spinner_three"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/bg_edittext_feedback"
+                        android:popupBackground="@color/colorPrimaryDark"
+                        android:textColor="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/options_three" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="Other feedback"
                         android:textAlignment="center"
                         android:textColor="@color/colorPrimaryDark">
 
@@ -121,6 +196,7 @@
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
                         android:id="@+id/submitfeedback_Btn"
                         android:background="@drawable/bg_button_feedback"
                         android:textColor="@color/colorPrimaryDark"

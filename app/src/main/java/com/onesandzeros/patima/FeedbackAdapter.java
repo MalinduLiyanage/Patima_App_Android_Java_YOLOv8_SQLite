@@ -51,15 +51,21 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.ViewHo
 
         outputImage = dbHelper.getOutputImagepath(feedback.getImg_id());
         inputImage = dbHelper.getInputImagepath(feedback.getImg_id());
-        holder.feedbackTxt.setText(feedback.getDesc());
         holder.ratingTxt.setText(String.valueOf(feedback.getRating()) + " out of 5");
         holder.usernameTxt.setText("By " + userName);
+        String profilepicturePath = dbHelper.getProfilepicture(userid);
+
+        String complete_feedback = feedback.getDesc();
+        String[] parts = feedback.getDesc().split("\\$\\$");
+        String part1 = parts[0]; // feedbackTxt
+        String part2 = parts[1]; // spinnerOneValue
+        String part3 = parts[2]; // spinnerTwoValue
+        String part4 = parts[3]; // spinnerThreeValue
+        holder.feedbackTxt.setText(part1);
 
         if(isSummaey){
             holder.feedbackImg.setVisibility(View.GONE);
             holder.feedbackuserImg.setVisibility(View.VISIBLE);
-
-            String profilepicturePath = dbHelper.getProfilepicture(userid);
 
             if(profilepicturePath.contains("http")){
                 Picasso.get()
@@ -88,20 +94,22 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.ViewHo
                         .into(holder.feedbackImg);
             }
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, ViewComparisonActivity.class);
-                    intent.putExtra("imgId", feedback.getImg_id());
-                    intent.putExtra("base_path", inputImage);
-                    intent.putExtra("detection_path", outputImage);
-                    intent.putExtra("timestamp", "Not specified");
-                    context.startActivity(intent);
-
-                }
-            });
-
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ViewSingleFeedbackActivity.class);
+                intent.putExtra("imgId", feedback.getImg_id());
+                intent.putExtra("base_path", inputImage);
+                intent.putExtra("detection_path", outputImage);
+                intent.putExtra("timestamp", "Not specified");
+                intent.putExtra("feedback", complete_feedback);
+                intent.putExtra("feedbackrating", feedback.getRating());
+                context.startActivity(intent);
+
+            }
+        });
 
     }
 

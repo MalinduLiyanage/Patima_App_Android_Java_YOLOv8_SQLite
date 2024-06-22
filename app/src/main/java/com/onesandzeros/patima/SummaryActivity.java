@@ -39,7 +39,7 @@ public class SummaryActivity extends AppCompatActivity {
     private ImageView processedImg;
     int imgId = 0;
     FloatingActionButton feedbackBtn;
-    TextView feedbackTextShow, detectTxt, nearbydetectTxt;
+    TextView feedbackTextShow, detectTxt, nearbyTxt, nearbydetectTxt, locationTxt;
     RecyclerView feedbackContainer, nearbyContainer;
     private List<Feedback> feedbackList;
     private FeedbackAdapter feedbackAdapter;
@@ -67,6 +67,8 @@ public class SummaryActivity extends AppCompatActivity {
         nearbyContainer = findViewById(R.id.nearby_container);
         detectTxt = findViewById(R.id.detect_txt);
         nearbydetectTxt = findViewById(R.id.nearby_detect_txt);
+        nearbyTxt = findViewById(R.id.nearby_txt);
+        locationTxt = findViewById(R.id.loc_text);
 
         SharedPreferences sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);
         String userTypest = sharedPreferences.getString("userType", "");
@@ -84,7 +86,6 @@ public class SummaryActivity extends AppCompatActivity {
 
         loadImages();
         loadNearby(imgId);
-        nearbyImages();
 
         feedbackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,12 +98,24 @@ public class SummaryActivity extends AppCompatActivity {
 
     }
 
-    private void loadNearby(int imgId) {
+    private boolean loadNearby(int imgId) {
         dbHelper = new SQLiteHelper(this);
         String location = dbHelper.getImagetag(imgId);
-        String[] locationParts = location.split(", ");
-        selectedImg_lat = Double.parseDouble(locationParts[0]);
-        selectedImg_lon = Double.parseDouble(locationParts[1]);
+        if(!location.contains("No Data")){
+            String[] locationParts = location.split(", ");
+            selectedImg_lat = Double.parseDouble(locationParts[0]);
+            selectedImg_lon = Double.parseDouble(locationParts[1]);
+            nearbyImages(selectedImg_lat, selectedImg_lon);
+            locationTxt.setText(location);
+            return true;
+        }else{
+            locationTxt.setText("Image has no Location Data. Location based summary will not be available.");
+            nearbydetectTxt.setVisibility(View.GONE);
+            nearbyContainer.setVisibility(View.GONE);
+            nearbyTxt.setVisibility(View.GONE);
+            return false;
+        }
+
     }
 
     public static boolean isWithinRadius(double lat, double lon, double targetLat, double targetLon, double radiusKm) {
@@ -216,7 +229,7 @@ public class SummaryActivity extends AppCompatActivity {
 
     }
 
-    private void nearbyImages() {
+    private void nearbyImages(double lat, double lon) {
         dbHelper = new SQLiteHelper(this);
         locationList = new ArrayList<>();
         locationAdapter = new LocationAdapter(locationList, this,dbHelper);
@@ -237,21 +250,23 @@ public class SummaryActivity extends AppCompatActivity {
                 int imageid = cursor.getInt(cursor.getColumnIndexOrThrow("Image_Id"));
                 String tags = cursor.getString(cursor.getColumnIndexOrThrow("Tags"));
 
-                Location location = new Location(imageid, tags);
+                if(!tags.contains("No Data")){
+                    Location location = new Location(imageid, tags);
 
-                String[] locationParts = tags.split(", ");
-                double targetLat = Double.parseDouble(locationParts[0]); // Replace with actual latitude to check
-                double targetLon = Double.parseDouble(locationParts[1]);  // Replace with actual longitude to check
-                double radiusKm = 5.0;
+                    String[] locationParts = tags.split(", ");
+                    double targetLat = Double.parseDouble(locationParts[0]); // Replace with actual latitude to check
+                    double targetLon = Double.parseDouble(locationParts[1]);  // Replace with actual longitude to check
+                    double radiusKm = 5.0;
 
-                if (isWithinRadius(selectedImg_lat, selectedImg_lon, targetLat, targetLon, radiusKm)) {
-                    if(imageid != imgId){
-                        //Toast.makeText(this, "The location is within 5 km radius.", Toast.LENGTH_SHORT).show();
-                        locationList.add(location);
-                        count++;
+                    if (isWithinRadius(lat, lon, targetLat, targetLon, radiusKm)) {
+                        if(imageid != imgId){
+                            //Toast.makeText(this, "The location is within 5 km radius.", Toast.LENGTH_SHORT).show();
+                            locationList.add(location);
+                            count++;
+                        }
+                    } else {
+                        //Toast.makeText(this, "The location is not within 5 km radius.", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    //Toast.makeText(this, "The location is not within 5 km radius.", Toast.LENGTH_SHORT).show();
                 }
 
             } while (cursor.moveToNext());

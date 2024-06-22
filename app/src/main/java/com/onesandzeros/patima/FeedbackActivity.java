@@ -6,8 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +27,8 @@ public class FeedbackActivity extends AppCompatActivity {
     TextView ratingTxt, feedbackTxt;
     ImageView processedImg;
     ImageButton submitBtn;
+    Spinner spinnerOne, spinnerTwo, spinnerThree;
+    String spinnerOneValue = "Very well", spinnerTwoValue = "Very well", spinnerThreeValue = "Very Satisfied";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +49,63 @@ public class FeedbackActivity extends AppCompatActivity {
         feedbackTxt = findViewById(R.id.feedback_text);
         submitBtn = findViewById(R.id.submitfeedback_Btn);
         processedImg = findViewById(R.id.processed_image);
+        spinnerOne = findViewById(R.id.spinner_one);
+        spinnerTwo = findViewById(R.id.spinner_two);
+        spinnerThree = findViewById(R.id.spinner_three);
+        spinnerSetup();
 
         loadImagePathsFromDatabase(img_Id);
 
         int finalImg_Id = img_Id;
+
+        spinnerOne.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Retrieve the selected item
+                String selectedOption = parent.getItemAtPosition(position).toString();
+
+                // Do something with the selected option
+                spinnerOneValue = selectedOption;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                spinnerOneValue = "Very well";
+            }
+        });
+
+        spinnerTwo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Retrieve the selected item
+                String selectedOption = parent.getItemAtPosition(position).toString();
+
+                // Do something with the selected option
+                spinnerTwoValue = selectedOption;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                spinnerTwoValue = "Very well";
+            }
+        });
+
+        spinnerThree.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Retrieve the selected item
+                String selectedOption = parent.getItemAtPosition(position).toString();
+
+                // Do something with the selected option
+                spinnerThreeValue = selectedOption;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                spinnerThreeValue = "Very Satisfied";
+            }
+        });
+
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +119,32 @@ public class FeedbackActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void spinnerSetup() {
+        // Create ArrayAdapter using the string array and custom spinner item layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.options,
+                R.layout.spinner_item_layout // Use custom layout for spinner items
+        );
+
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(R.layout.spinner_item_layout);
+
+        ArrayAdapter<CharSequence> adapterthree = ArrayAdapter.createFromResource(
+                this,
+                R.array.options_three,
+                R.layout.spinner_item_layout // Use custom layout for spinner items
+        );
+
+        // Specify the layout to use when the list of choices appears
+        adapterthree.setDropDownViewResource(R.layout.spinner_item_layout);
+
+        // Apply the adapter to the spinner
+        spinnerOne.setAdapter(adapter);
+        spinnerTwo.setAdapter(adapter);
+        spinnerThree.setAdapter(adapterthree);
     }
 
     private void loadImagePathsFromDatabase(int imgId) {
@@ -90,7 +174,8 @@ public class FeedbackActivity extends AppCompatActivity {
 
         if (ratingTxt <= 5 && ratingTxt > 0 && feedbackTxt.length() > 5){
             SQLiteHelper dbHelper = new SQLiteHelper(this);
-            String returnedMsg = dbHelper.addFeedback(img_Id, feedbackTxt, ratingTxt,userid);
+            String concat = feedbackTxt + "$$" + spinnerOneValue + "$$" + spinnerTwoValue + "$$" + spinnerThreeValue;
+            String returnedMsg = dbHelper.addFeedback(img_Id, concat, ratingTxt,userid);
             Toast.makeText(this, returnedMsg, Toast.LENGTH_SHORT).show();
             finish();
         }else{
@@ -98,4 +183,5 @@ public class FeedbackActivity extends AppCompatActivity {
         }
 
     }
+
 }

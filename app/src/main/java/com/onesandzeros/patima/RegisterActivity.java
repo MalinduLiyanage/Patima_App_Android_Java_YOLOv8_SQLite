@@ -21,7 +21,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.util.Properties;
 import java.util.regex.Pattern;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -136,8 +147,8 @@ public class RegisterActivity extends AppCompatActivity {
         String password = passwordTxt.getText().toString();
         String profilePicture = "https://wallpapersmug.com/download/320x240/484769/colorful-waves-digital-art.jpg"; // Placeholder
         boolean isAdmin = false;
-        String activationLink = "activation_link"; // Placeholder
-        boolean activationStatus = true; // Placeholder
+        String activationLink = "https://onesandzeros.patima.api/activate/" + email; // Placeholder
+        boolean activationStatus = false;
 
         boolean result = dbHelper.addUserRecord(fname, lname, email, profilePicture, isAdmin, password, activationLink, activationStatus, arcId);
 

@@ -6,6 +6,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
+import android.widget.Toast;
+
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
 
@@ -132,9 +145,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         addImage(db, 6, 7,"https://i.pinimg.com/736x/65/20/70/652070abf6c84fbeb26f84f26127e3a4.jpg", "https://i.pinimg.com/1200x/3c/8a/3a/3c8a3a0e86a93652c6a3fd4e46b94a18.jpg", "2024-06-12 17:00:00");
 
         // Add initial records to FEEDBACK table
-        addFeedback(db, 1, "Great image!", 5, 4,5);
-        addFeedback(db, 2, "Needs improvement", 3, 5,6);
-        addFeedback(db, 3, "Excellent quality", 5, 6,7);
+        addFeedback(db, 1, "Very good image generation$$Somewhat well$$Neutral$$Not applicable", 5, 4,5);
+        addFeedback(db, 2, "I expected much more$$Somewhat well$$Neutral$$Not applicable", 3, 5,6);
+        addFeedback(db, 3, "Its good for your level$$Somewhat well$$Neutral$$Not applicable", 5, 6,7);
 
         // Add initial records to IMAGE_TAG table (locations)
         addImageTag(db, 1, "8.3114, 80.4037");
@@ -237,6 +250,22 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return email;
     }
 
+    public String getUserPassword(int userid) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String password = null;
+        String query = "SELECT Password FROM USER WHERE User_Id = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userid)});
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                password = cursor.getString(cursor.getColumnIndex("Password"));  // Ensure the case matches the table definition
+            }
+            cursor.close();
+        }
+        db.close();
+        return password;
+    }
+
     public String getUserName(int userid) {
         SQLiteDatabase db = this.getReadableDatabase();
         String full_name = null;
@@ -292,6 +321,27 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.close();
         return path;
     }
+
+    public void deleteUser(int userId, Context context) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = "User_Id = ?";
+        String[] whereArgs = {String.valueOf(userId)};
+
+        // Perform the delete operation
+        int rowsAffected = db.delete("USER", whereClause, whereArgs);
+
+        // Close the database
+        db.close();
+
+        // Show a toast message
+        if (rowsAffected > 0) {
+            Toast.makeText(context, "User deleted successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "User not found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     public String getOutputImagepath(int imageid) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -364,6 +414,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public boolean addUserRecord(String fname, String lname, String email, String profilePicture, boolean isAdmin, String password, String activationLink, boolean activationStatus, String arcId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
+        long userId = -1;
         try {
             ContentValues values = new ContentValues();
             values.put("Fname", fname);
@@ -374,7 +425,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             values.put("Password", password);
             values.put("Activation_Link", activationLink);
             values.put("Activation_Status", activationStatus);
-            long userId = db.insert("USER", null, values);
+            userId = db.insert("USER", null, values);
 
             if (userId == -1) {
                 return false;
@@ -394,24 +445,70 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             db.setTransactionSuccessful();
             return true;
         } catch (Exception e) {
+            e.printStackTrace(); // Log the exception
             return false;
         } finally {
             db.endTransaction();
+            // Send activation email outside of the transaction
+            if (userId != -1) {
+                try {
+                    MailSender mailSender = new MailSender();
+                    mailSender.sendMail(email,"Activate Patima account", "Click the link to activate your account\n\n" + activationLink);
+                } catch (Exception e) {
+                    e.printStackTrace(); // Log the exception
+                    // Optionally, handle the case where the email fails to send
+                }
+            }
         }
     }
 
-    public void updateUser(int userId, String fname, String lname, String profilePicture, String password) {
+    public void activateAccount(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("Fname", fname);
-        values.put("Lname", lname);
-        values.put("Profile_Picture", profilePicture);
-        values.put("Password", password);
+        values.put("Activation_Status", 1);
 
+        String selection = "Email = ?";
+        String[] selectionArgs = { String.valueOf(email) };
+
+        db.update("USER", values, selection, selectionArgs);
+    }
+
+    public int forgotPassword(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("Password", "patimauser");
+
+        String selection = "Email = ?";
+        String[] selectionArgs = { String.valueOf(email) };
+
+        int status = db.update("USER", values, selection, selectionArgs);
+
+        if (status > 0) {
+            // Rows updated successfully
+            MailSender mailSender = new MailSender();
+            mailSender.sendMail(email, "Reset Password - Patima account", "Your password change request is accepted.\n\nYour new password is: patimauser");
+            return 1;
+        } else {
+            // No rows updated (email not found)
+            return -1;
+        }
+    }
+
+    public boolean updateUser(int userId, String firstName, String lastName, String profilePicturePath, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("Fname", firstName);
+        values.put("Lname", lastName);
+        values.put("Profile_Picture", profilePicturePath);
+        values.put("Password", password); // Assuming you need to update the password too
+
+        // Define the criteria for the row(s) to update
         String selection = "User_Id = ?";
         String[] selectionArgs = { String.valueOf(userId) };
 
-        db.update("USER", values, selection, selectionArgs);
+        // Update the row(s)
+        int count = db.update("USER", values, selection, selectionArgs);
+        return count > 0; // Return true if at least one row was updated
     }
 
 

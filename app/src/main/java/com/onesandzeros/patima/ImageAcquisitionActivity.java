@@ -557,8 +557,13 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
                     }else{
                         inputImagePath = capturePath;
                     }
+                    /*
+                    *
+                    * Add outPath as a parameter to the method, url is passed to show a dummy
+                    *
+                    * */
                     String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date());
-                    imgId = dbHelper.addImage(userId, outputPath, inputImagePath, timestamp);
+                    imgId = dbHelper.addImage(userId, "https://c1.wallpaperflare.com/preview/263/75/660/buddha-image-buddha-statue-black-and-white.jpg", inputImagePath, timestamp);
                     dbHelper.addImageTag(imgId, latitudeString + ", " + longitudeString);
                     //Toast.makeText(this, imid, Toast.LENGTH_SHORT).show();
                 }

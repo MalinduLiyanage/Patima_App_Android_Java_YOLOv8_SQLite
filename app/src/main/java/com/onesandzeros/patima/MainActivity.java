@@ -186,8 +186,11 @@ public class MainActivity extends AppCompatActivity {
         detectTxt = findViewById(R.id.detect_Txt);
 
         String userTypest = sharedPreferences.getString("userType","");
-        String username = sharedPreferences.getString("username","");
         int userid = sharedPreferences.getInt("userId",0);
+        String username = dbHelper.getUserName(userid);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("username", username);
+        editor.apply();
 
         userName = findViewById(R.id.username_text);
         userType = findViewById(R.id.usertype_text);
@@ -281,9 +284,13 @@ public class MainActivity extends AppCompatActivity {
         logoutBtn = findViewById(R.id.menu_logout);
 
         SharedPreferences sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);
-        String username = sharedPreferences.getString("username","");
         int userid = sharedPreferences.getInt("userId",0);
         String userTypest = sharedPreferences.getString("userType","");
+
+        String username = dbHelper.getUserName(userid);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("username", username);
+        editor.apply();
 
         userName.setText(sharedPreferences.getString("username",username));
 

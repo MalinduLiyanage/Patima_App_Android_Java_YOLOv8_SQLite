@@ -174,33 +174,38 @@ public class LoginActivity extends AppCompatActivity {
                 String firstName = cursor.getString(cursor.getColumnIndexOrThrow("Fname"));
                 String lastName = cursor.getString(cursor.getColumnIndexOrThrow("Lname"));
                 String fullName = firstName + " " + lastName;
+                int ifActivated = cursor.getInt(cursor.getColumnIndexOrThrow("Activation_Status"));
 
-                if (dbHelper.isUserGeneralPublic(userId)) {
-                    //Toast.makeText(this, "General Public with userId: " + userId, Toast.LENGTH_SHORT).show();
+                if(ifActivated == 1){
+                    if (dbHelper.isUserGeneralPublic(userId)) {
+                        //Toast.makeText(this, "General Public with userId: " + userId, Toast.LENGTH_SHORT).show();
 
-                    editor.putString("isStarted", "yes");
-                    editor.putString("userType", "General Public User");
-                    editor.putInt("userId", userId);
-                    editor.putString("username", fullName);
-                    editor.apply();
+                        editor.putString("isStarted", "yes");
+                        editor.putString("userType", "General Public User");
+                        editor.putInt("userId", userId);
+                        editor.putString("username", fullName);
+                        editor.apply();
 
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    finish();
-                } else if (dbHelper.isUserArcheologist(userId)) {
-                    //Toast.makeText(this, "Archeologist with userId: " + userId, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        finish();
+                    } else if (dbHelper.isUserArcheologist(userId)) {
+                        //Toast.makeText(this, "Archeologist with userId: " + userId, Toast.LENGTH_SHORT).show();
 
-                    editor.putString("isStarted", "yes");
-                    editor.putString("userType", "Archeologist User");
-                    editor.putInt("userId", userId);
-                    editor.putString("username", fullName);
-                    editor.apply();
+                        editor.putString("isStarted", "yes");
+                        editor.putString("userType", "Archeologist User");
+                        editor.putInt("userId", userId);
+                        editor.putString("username", fullName);
+                        editor.apply();
 
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    finish();
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        finish();
+                    }
+                }else{
+                    Toast.makeText(this, "User not activated. Check Email Inbox", Toast.LENGTH_LONG).show();
                 }
             } else {
                 Toast.makeText(this, "No matching user", Toast.LENGTH_SHORT).show();
