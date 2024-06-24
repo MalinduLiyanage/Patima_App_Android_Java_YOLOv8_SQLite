@@ -29,6 +29,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +46,7 @@ public class SummaryActivity extends AppCompatActivity {
     private ImageView processedImg;
     int imgId = 0;
     FloatingActionButton feedbackBtn;
-    TextView feedbackTextShow, detectTxt, nearbyTxt, nearbydetectTxt, locationTxt;
+    TextView feedbackTextShow, detectTxt, nearbyTxt, nearbydetectTxt, locationTxt, locationName;
     RecyclerView feedbackContainer, nearbyContainer;
     private List<Feedback> feedbackList;
     private FeedbackAdapter feedbackAdapter;
@@ -69,6 +76,7 @@ public class SummaryActivity extends AppCompatActivity {
         nearbydetectTxt = findViewById(R.id.nearby_detect_txt);
         nearbyTxt = findViewById(R.id.nearby_txt);
         locationTxt = findViewById(R.id.loc_text);
+        locationName = findViewById(R.id.loc_name);
 
         SharedPreferences sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);
         String userTypest = sharedPreferences.getString("userType", "");
@@ -107,6 +115,7 @@ public class SummaryActivity extends AppCompatActivity {
             selectedImg_lon = Double.parseDouble(locationParts[1]);
             nearbyImages(selectedImg_lat, selectedImg_lon);
             locationTxt.setText(location);
+            reverseGeocode(selectedImg_lat, selectedImg_lon);
             return true;
         }else{
             locationTxt.setText("Image has no Location Data. Location based summary will not be available.");
@@ -128,6 +137,63 @@ public class SummaryActivity extends AppCompatActivity {
         double maxLon = lon + deltaLon;
 
         return targetLat >= minLat && targetLat <= maxLat && targetLon >= minLon && targetLon <= maxLon;
+    }
+
+    private void reverseGeocode(double latitude, double longitude) {
+
+        final String requestString = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" +
+                Double.toString(latitude) + "&lon=" + Double.toString(longitude) + "&zoom=18&addressdetails=1";
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(requestString);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        StringBuilder response = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            response.append(line);
+                        }
+                        reader.close();
+
+                        JSONObject jsonResponse = new JSONObject(response.toString());
+                        JSONObject address = jsonResponse.getJSONObject("address");
+
+                        String townName = "";
+                        if (address.has("town")) {
+                            townName = address.getString("town") + " - " + address.getString("country");
+                        } else if (address.has("village")) {
+                            townName = address.getString("village") + " - " + address.getString("country");
+                        }  else if (address.has("state")) {
+                            townName = address.getString("state") + " - " + address.getString("country");
+                        }
+
+                        final String finalTownName = townName;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!finalTownName.isEmpty()) {
+                                    locationName.setText(finalTownName);
+                                } else {
+                                    locationName.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
+
+                    connection.disconnect();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override

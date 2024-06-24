@@ -1,6 +1,8 @@
 package com.onesandzeros.patima;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,12 +24,18 @@ public class OverlayView extends View {
     private Paint textBackgroundPaint;
     private Paint textPaint;
     private Rect bounds;
+    private Bitmap guidedBitmap;
 
     public OverlayView(Context context, AttributeSet attrs) {
         super(context, attrs);
         results = new LinkedList<>();
         bounds = new Rect();
         initPaints();
+        loadGuidedBitmap(context);  // Load the guided bitmap
+    }
+
+    private void loadGuidedBitmap(Context context) {
+        guidedBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_guided);  // Adjust the resource name as necessary
     }
 
     public void clear() {
@@ -60,6 +68,14 @@ public class OverlayView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // Draw the constant image icon
+        if (guidedBitmap != null) {
+            // Adjust the position (x, y) as needed
+            float x = 0; // Example x-coordinate
+            float y = 0; // Example y-coordinate
+            canvas.drawBitmap(guidedBitmap, x, y, null);
+        }
+
         for (BoundingBox box : results) {
             float left = box.getX1() * getWidth();
             float top = box.getY1() * getHeight();
@@ -69,6 +85,8 @@ public class OverlayView extends View {
             canvas.drawRect(left, top, right, bottom, boxPaint);
             String drawableText = box.getClsName();
 
+            //Method for label display while realtime object detection
+            /*
             textBackgroundPaint.getTextBounds(drawableText, 0, drawableText.length(), bounds);
             float textWidth = bounds.width();
             float textHeight = bounds.height();
@@ -80,6 +98,8 @@ public class OverlayView extends View {
                     textBackgroundPaint
             );
             canvas.drawText(drawableText, left, top + bounds.height(), textPaint);
+            */
+
         }
     }
 

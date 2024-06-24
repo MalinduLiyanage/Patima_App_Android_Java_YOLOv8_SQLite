@@ -1,6 +1,7 @@
 package com.onesandzeros.patima;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.hardware.camera2.CaptureRequest;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -24,10 +26,13 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,12 +41,18 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.camera2.interop.Camera2Interop;
+import androidx.camera.camera2.interop.ExperimentalCamera2Interop;
 import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
+import androidx.camera.core.CameraControl;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.FocusMeteringAction;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.MeteringPoint;
+import androidx.camera.core.MeteringPointFactory;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -66,7 +77,7 @@ import java.util.concurrent.Executors;
 public class ImageAcquisitionActivity extends AppCompatActivity implements Detector.DetectorListener {
     private ActivityImageAcquisitionBinding binding;
     private final boolean isFrontCamera = false;
-    ImageButton galBtn, cameraBtn;
+    ImageButton galBtn, cameraBtn, flashBtn;
     private Preview preview;
     private ImageAnalysis imageAnalyzer;
     private Camera camera;
@@ -75,7 +86,7 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
     ImageView imageView;
     private ExecutorService cameraExecutor;
     ConstraintLayout cameraContainer;
-    boolean isCameraOn = false, isCameraOff = true, isPredictable = false, tryAgain = false;
+    boolean isCameraOn = false, isCameraOff = true, isPredictable = false, tryAgain = false, autoPredict = true;
     private final int IMAGE_PICK = 100;
     Bitmap bitmap, croppedBitmap, detectedBitmap;
     private ImageCapture imageCapture;
@@ -83,11 +94,12 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
     TextView detected;
     private static final String TAG = "Camera";
     private static final int REQUEST_CODE_PERMISSIONS = 10;
-    int imgId = 0;
+    int imgId = 0, isFlash = 2; // Flash Status - 1 = On / 2 = Off
     private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
     String latitudeString = null, longitudeString = null;
-
     Float CONFIDENCE_THRESHOLD = 0F;
+    private CameraControl cameraControl;
+    Switch autoPredictSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,13 +117,16 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
 
         CONFIDENCE_THRESHOLD = sharedPreferences.getFloat("CONFIDENCE_THRESHOLD",0);
 
-
         galBtn = findViewById(R.id.galleryBtn);
         cameraBtn = findViewById(R.id.captureBtn);
+        flashBtn = findViewById(R.id.flashBtn);
         imageView = findViewById(R.id.imageView);
         cameraContainer = findViewById(R.id.camera_container);
         detected = findViewById(R.id.detect_txt);
+        autoPredictSwitch = findViewById(R.id.mode_switch);
 
+        flashBtn.setEnabled(false);
+        autoPredictSwitch.setEnabled(false);
 
         ContentValues contentValues = new ContentValues();
         Location location = getLocation(ImageAcquisitionActivity.this); // Implement getLocation() method below
@@ -134,6 +149,8 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
             @Override
             public void onClick(View v) {
                 if (isCameraOff) {
+                    flashBtn.setEnabled(true);
+                    autoPredictSwitch.setEnabled(true);
                     imageView.setVisibility(View.GONE);
                     cameraBtn.setBackgroundResource(R.drawable.bg_button_capture);
                     cameraContainer.setVisibility(View.VISIBLE);
@@ -151,11 +168,13 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
                     if (allPermissionsGrant()) {
                         isCameraOff = false;
                         startCamera();
+                        setupTouchListener();
                     } else {
                         Intent intent = new Intent(ImageAcquisitionActivity.this, PermissionActivity.class);
                         startActivity(intent);
                     }
                 } else if (isCameraOn) {
+                    flashBtn.setEnabled(false);
                     binding.overlay.clear();
                     captureAndSaveImage();
                     if (detector != null) {
@@ -172,6 +191,36 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
                     startActivity(intent);
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     finish();
+                }
+            }
+        });
+
+        flashBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isFlash == 2){
+                    //Turn on camera flash
+                    isFlash = 1;
+                    flashBtn.setBackgroundResource(R.drawable.bg_button_flashon);
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_ON);
+                    Toast.makeText(ImageAcquisitionActivity.this, "Flash On", Toast.LENGTH_SHORT).show();
+                }else{
+                    isFlash = 2;
+                    flashBtn.setBackgroundResource(R.drawable.bg_button_flashoff);
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
+                    Toast.makeText(ImageAcquisitionActivity.this, "Flash Off", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        autoPredictSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    autoPredict = true;
+                    Toast.makeText(ImageAcquisitionActivity.this, "Auto Predict On", Toast.LENGTH_SHORT).show();
+                } else {
+                    autoPredict = false;
+                    Toast.makeText(ImageAcquisitionActivity.this, "Auto Predict Off", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -212,6 +261,7 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
             }
         }, 2000); // Retry after 2 seconds
     }
+
     private void bindCameraUseCases() {
         if (cameraProvider == null) {
             throw new IllegalStateException("Camera initialization failed.");
@@ -224,12 +274,12 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
                 .build();
 
         preview = new Preview.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetAspectRatio(AspectRatio.RATIO_DEFAULT)
                 .setTargetRotation(rotation)
                 .build();
 
         imageAnalyzer = new ImageAnalysis.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetAspectRatio(AspectRatio.RATIO_DEFAULT)
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .setTargetRotation(rotation)
                 .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
@@ -247,18 +297,20 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
                 matrix.postScale(-1f, 1f, imageProxy.getWidth(), imageProxy.getHeight());
             }
 
-            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmapBuffer, 0, 0, bitmapBuffer.getWidth(), bitmapBuffer.getHeight(), matrix, true);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmapBuffer, 0, 0, bitmapBuffer.getWidth(), bitmapBuffer.getHeight(), matrix, false);
             detector.detect(rotatedBitmap);
 
             imageProxy.close();
         });
 
         imageCapture = new ImageCapture.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+                .setTargetAspectRatio(AspectRatio.RATIO_DEFAULT)
                 .setTargetRotation(rotation)
+                .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
                 .build();
 
         cameraProvider.unbindAll();
+        imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
 
         try {
             camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer, imageCapture);
@@ -267,6 +319,35 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
             Log.e(TAG, "Use case binding failed", e);
         }
     }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupTouchListener() {
+        binding.viewFinder.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                MeteringPointFactory factory = binding.viewFinder.getMeteringPointFactory();
+                MeteringPoint point = factory.createPoint(event.getX(), event.getY());
+
+                FocusMeteringAction action = new FocusMeteringAction.Builder(point)
+                        .addPoint(point) // focus point
+                        .build();
+
+                // Enable flash and focus
+                //imageCapture.setFlashMode(ImageCapture.FLASH_MODE_ON);
+                cameraControl = camera.getCameraControl();
+                cameraControl.startFocusAndMetering(action).addListener(() -> {
+                    // Capture the image after focusing
+                    captureAndSaveImage();
+
+                    // Reset flash mode to off after capturing
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
+                }, ContextCompat.getMainExecutor(this));
+                return true;
+            }
+            return false;
+        });
+    }
+
+
     private void captureAndSaveImage() {
 
         // Create output options for the captured image
@@ -406,99 +487,61 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
     @Override
     public void onEmptyDetect() {
         binding.overlay.invalidate();
+        binding.overlay.clear();
     }
     public void onEmptyDetectGallery() {
         tryAgain = true;
         detected.setVisibility(View.VISIBLE);
         detected.setGravity(Gravity.CENTER);
+        detected.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         detected.setText("No object detected. Please try again!");
         //cameraBtn.setText("Try Again");
         cameraBtn.setBackgroundResource(R.drawable.bg_button_retry);
         galBtn.setVisibility(View.GONE);
         galBtn.setEnabled(false);
+        flashBtn.setVisibility(View.GONE);
+        flashBtn.setEnabled(false);
+        autoPredictSwitch.setVisibility(View.GONE);
+        autoPredictSwitch.setEnabled(false);
+
     }
     @Override
     public void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime) {
         runOnUiThread(() -> {
-            binding.inferenceTime.setText(inferenceTime + "ms");
+            binding.inferenceTime.setText("Processing Delay : " + inferenceTime + " milliseconds");
             binding.overlay.setResults(boundingBoxes);
             binding.overlay.invalidate();
-        });
-    }
-    /*
-    @Override
-    public void onDetectGallery(List<BoundingBox> boundingBoxes, long inferenceTime) {
-        runOnUiThread(() -> {
-            binding.inferenceTime.setText(inferenceTime + "ms");
-            List<String> labels = detector.getLabels();
-            binding.overlay.setResultsGallery(boundingBoxes, labels);
-            binding.overlay.invalidate();
 
-            // Update the bitmap variable with the cropped bitmap before drawing bounding boxes
-            if (croppedBitmap != null) {
-                bitmap = croppedBitmap; // Make sure croppedBitmap is the correct bitmap that you want to use
-                // Display the imageView with the detected bounding boxes
-                Bitmap detectedBitmap = drawBoundingBoxes(bitmap.copy(Bitmap.Config.ARGB_8888, true), boundingBoxes, labels);
-                imageView.setImageBitmap(detectedBitmap);
-            } else if (bitmap != null){
-                Bitmap detectedBitmap = drawBoundingBoxes(bitmap.copy(Bitmap.Config.ARGB_8888, true), boundingBoxes, labels);
-                imageView.setImageBitmap(detectedBitmap);
-            } else {
-                Log.e(TAG, "croppedBitmap is null");
-            }
+            if(autoPredict){
+                Map<String, Integer> labelCounts = new HashMap<>();
+                for (BoundingBox box : boundingBoxes) {
+                    String label = box.getClsName();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        labelCounts.put(label, labelCounts.getOrDefault(label, 0) + 1);
+                    }
+                }
 
-            // Create a map to store the count of detections for each label
-            Map<String, Integer> labelCounts = new HashMap<>();
+                int headCount = 0, bodyCount = 0;
+                for (Map.Entry<String, Integer> entry : labelCounts.entrySet()) {
+                    String labelName = entry.getKey();
+                    if (labelName.contains("head")) {
+                        headCount++;
+                    } else if (labelName.contains("body")) {
+                        bodyCount++;
+                    }
+                }
 
-            for (BoundingBox box : boundingBoxes) {
-                String label = box.getClsName();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    labelCounts.put(label, labelCounts.getOrDefault(label, 0) + 1);
+                if (headCount == 0 && bodyCount == 1) {
+                    captureAndSaveImage();
                 }
             }
 
-            int headCount = 0, bodyCount = 0;
-
-            // Display count of detections with label names as toast messages
-            for (Map.Entry<String, Integer> entry : labelCounts.entrySet()) {
-                String labelName = entry.getKey();
-                if(labelName.contains("head")){
-                    headCount++;
-                }else if(labelName.contains("body")){
-                    bodyCount++;
-                }
-            }
-            if(headCount == 0 && bodyCount == 1){
-                isPredictable = true;
-            }else{
-                tryAgain = true;
-            }
-            //Toast.makeText(ImageAcquisitionActivity.this, "Head count: " + headCount + " Body count: " + bodyCount, Toast.LENGTH_SHORT).show();
-
         });
-        if (detector != null){
-            detector.shutdown();
-            //Toast.makeText(ImageAcquisitionActivity.this, "Detector shutdown", Toast.LENGTH_SHORT).show();
-        }
-        if (isPredictable){
-            //cameraBtn.setText("Generate!");
-            cameraBtn.setBackgroundResource(R.drawable.bg_button_generate);
-            galBtn.setVisibility(View.GONE);
-            galBtn.setEnabled(false);
-        }else if(tryAgain){
-            detected.setVisibility(View.VISIBLE);
-            //cameraBtn.setText("Try Again");
-            cameraBtn.setBackgroundResource(R.drawable.bg_button_retry);
-            galBtn.setVisibility(View.GONE);
-            galBtn.setEnabled(false);
-        }
-
     }
-*/
     @Override
     public void onDetectGallery(List<BoundingBox> boundingBoxes, long inferenceTime) {
         runOnUiThread(() -> {
-            binding.inferenceTime.setText(inferenceTime + "ms");
+            binding.inferenceTime.setText("Processing Delay : " + inferenceTime + " milliseconds");
             List<String> labels = detector.getLabels();
             binding.overlay.setResultsGallery(boundingBoxes, labels);
             binding.overlay.invalidate();
@@ -572,11 +615,19 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
             cameraBtn.setBackgroundResource(R.drawable.bg_button_generate);
             galBtn.setVisibility(View.GONE);
             galBtn.setEnabled(false);
+            flashBtn.setVisibility(View.GONE);
+            flashBtn.setEnabled(false);
+            autoPredictSwitch.setVisibility(View.GONE);
+            autoPredictSwitch.setEnabled(false);
         } else if (tryAgain) {
             detected.setVisibility(View.VISIBLE);
             cameraBtn.setBackgroundResource(R.drawable.bg_button_retry);
             galBtn.setVisibility(View.GONE);
             galBtn.setEnabled(false);
+            flashBtn.setVisibility(View.GONE);
+            flashBtn.setEnabled(false);
+            autoPredictSwitch.setVisibility(View.GONE);
+            autoPredictSwitch.setEnabled(false);
         }
     }
 

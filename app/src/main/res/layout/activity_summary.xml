@@ -32,6 +32,60 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <RelativeLayout
+                android:layout_gravity="center"
+                android:layout_width="200dp"
+                android:layout_height="300dp">
+
+                <ImageView
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/base_image"
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </ImageView>
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/processed_image"
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </ImageView>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btn_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="10dp"
+                    android:tooltipText="Add Feedback"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:src="@drawable/ic_addfeedback"
+                    app:fabSize="normal"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/poppins"
+                android:text="Touch on the image to see a comparison of Input and processed images."
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDark">
+
+            </TextView>
+
             <LinearLayout
                 android:id="@+id/locLayout"
                 android:gravity="center"
@@ -51,71 +105,37 @@
 
                 </ImageView>
 
-                <TextView
-                    android:id="@+id/loc_text"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:fontFamily="@font/poppins_bold"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:layout_weight="1"
-                    android:textAlignment="center"
-                    android:text="ACCESS_COARSE_LOCATION">
+                    android:orientation="vertical">
 
-                </TextView>
+                    <TextView
+                        android:id="@+id/loc_text"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="2"
+                        android:layout_weight="1">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/loc_name"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:fontFamily="@font/poppins_bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Loading..."
+                        android:maxLines="2"
+                        android:layout_weight="1">
+
+                    </TextView>
+
+                </LinearLayout>
 
             </LinearLayout>
-
-            <RelativeLayout
-                android:layout_gravity="center"
-                android:layout_width="200dp"
-                android:layout_height="300dp">
-
-                <ImageView
-                    android:visibility="gone"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/base_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_welcome">
-
-                </ImageView>
-
-                <ImageView
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/processed_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_welcome">
-
-                </ImageView>
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btn_feedback"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_addfeedback"
-                    app:fabSize="normal"/>
-
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="15dp"
-                android:fontFamily="@font/poppins"
-                android:text="Touch on the image to see a comparison of Input and processed images."
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimaryDark">
-
-            </TextView>
 
             <ScrollView
                 android:id="@+id/scroll_view"
@@ -169,11 +189,12 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:id="@+id/nearby_txt"
-                        android:text="Statues Nearby (05KM)">
+                        android:text="Generated Statues Nearby (05KM)">
 
                     </TextView>
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:layout_marginBottom="15dp"
                         android:id="@+id/nearby_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">

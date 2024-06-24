@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Patima"
         tools:targetApi="31">
+        
         <activity
             android:name=".ViewSingleFeedbackActivity"
             android:exported="false" />
@@ -38,7 +39,7 @@
             android:name=".ParametersActivity"
             android:exported="false" />
         <activity
-            android:name=".TestActivity"
+            android:name=".ConfirmEmailActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

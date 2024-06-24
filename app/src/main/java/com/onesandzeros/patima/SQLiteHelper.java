@@ -49,13 +49,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY (User_Id) REFERENCES USER(User_Id)" +
                 ")";
 
-
         String createArcheologistTable = "CREATE TABLE ARCHEOLOGIST (" +
                 "User_Id INTEGER PRIMARY KEY," +
                 "Archeologist_Id INTEGER," +
                 "FOREIGN KEY (User_Id) REFERENCES USER(User_Id)" +
                 ")";
-
 
         String createImageTable = "CREATE TABLE IMAGE (" +
                 "Image_Id INTEGER PRIMARY KEY," +
@@ -65,7 +63,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 "Timestamp TEXT," +
                 "FOREIGN KEY (User_Id) REFERENCES USER(User_Id)" +
                 ")";
-
 
         String createFeedbackTable = "CREATE TABLE FEEDBACK (" +
                 "Feedback_Id INTEGER PRIMARY KEY," +
@@ -91,6 +88,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 "Name TEXT," +
                 "Check_Status BOOLEAN" +
                 ")";
+
 
         db.execSQL(createUserTable);
         db.execSQL(createGeneralPublicTable);
@@ -118,44 +116,65 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     private void insertInitialRecords(SQLiteDatabase db) {
         // Add initial records to USER table (removed_adminid)
-        addUser(db, 1, "Kasun", "Perera", "kasunperera101@gmail.com", "https://wallpapersmug.com/download/320x240/484769/colorful-waves-digital-art.jpg", true, "password", "preloadeduser", true);
-        addUser(db, 2, "Thushara", "Deegalla", "thush455@gmail.com", "https://wallpapersmug.com/download/320x240/484769/colorful-waves-digital-art.jpg", false, "password", "preloadeduser", true);
-        addUser(db, 3, "Charana", "Gamage","charanagamage@gmail.com", "https://wallpapersmug.com/download/320x240/484769/colorful-waves-digital-art.jpg", false, "password", "preloadeduser", true);
-        addUser(db, 4, "Hasith", "Ranasinghe", "hasi878@gmail.com", "https://wallpapersmug.com/download/320x240/484769/colorful-waves-digital-art.jpg", false, "password", "preloadeduser", true);
-        addUser(db, 5, "Sithu", "Bhagya", "sithusithu@gmail.com", "https://wallpapersmug.com/download/320x240/484769/colorful-waves-digital-art.jpg", false, "password", "preloadeduser", true);
-        addUser(db, 6, "Amaa", "Chethana", "amaache44@gmail.com", "https://wallpapersmug.com/download/320x240/484769/colorful-waves-digital-art.jpg", false, "password", "preloadeduser", true);
-        addUser(db, 7, "Yasith", "Weerasinghe", "yasithweerasinha@gmail.com", "https://wallpapersmug.com/download/320x240/484769/colorful-waves-digital-art.jpg", false, "password", "preloadeduser", true);
+        addUser(db, 1, "Thushara", "Deegalla", "thush455@gmail.com", "https://www.mbacrystalball.com/wp-content/uploads/2021/03/Improve-profile-for-MBA-India-USA.jpg", false, "password", "preloadeduser", true);
+        addUser(db, 2, "Charana", "Gamage","charanagamage@gmail.com", "https://www.vivahonline.com/profileimages/profile_IMG_20170707_034945_547.jpg", false, "password", "preloadeduser", true);
+        addUser(db, 3, "Hasith", "Ranasinghe", "hasi878@gmail.com", "https://t4.ftcdn.net/jpg/01/84/54/21/360_F_184542148_ZRs7YiAIvlmF0HtSuct201pVsi5sq6jF.jpg", false, "password", "preloadeduser", true);
+        addUser(db, 4, "Sithu", "Bhagya", "sithusithu@gmail.com", "https://img.freepik.com/premium-photo/headshot-photos-indian-women-dynamic-professions-occassions-indian-girl_978786-292.jpg", false, "password", "preloadeduser", true);
 
         // Add initial records to GENERAL_PUBLIC table (removed imageid)
+        addGeneralPublic(db, 1);
         addGeneralPublic(db, 2);
-        addGeneralPublic(db, 3);
-        addGeneralPublic(db, 4);
 
         // Add initial records to ARCHEOLOGIST table (removed imageid, feedbackid)
-        addArcheologist(db, 5, 101);
-        addArcheologist(db, 6, 102);
-        addArcheologist(db, 7, 103);
+        addArcheologist(db, 3, 1011);
+        addArcheologist(db, 4, 1021);
 
         // Add initial records to IMAGE table (added userid)
-        addImage(db, 1, 2,"https://i.pinimg.com/736x/65/20/70/652070abf6c84fbeb26f84f26127e3a4.jpg", "https://i.pinimg.com/1200x/3c/8a/3a/3c8a3a0e86a93652c6a3fd4e46b94a18.jpg", "2024-06-12 12:00:00");
-        addImage(db, 2, 3,"https://i.pinimg.com/736x/65/20/70/652070abf6c84fbeb26f84f26127e3a4.jpg", "https://i.pinimg.com/1200x/3c/8a/3a/3c8a3a0e86a93652c6a3fd4e46b94a18.jpg", "2024-06-12 13:00:00");
-        addImage(db, 3, 4,"https://i.pinimg.com/736x/65/20/70/652070abf6c84fbeb26f84f26127e3a4.jpg", "https://i.pinimg.com/1200x/3c/8a/3a/3c8a3a0e86a93652c6a3fd4e46b94a18.jpg", "2024-06-12 14:00:00");
-        addImage(db, 4, 5,"https://i.pinimg.com/736x/65/20/70/652070abf6c84fbeb26f84f26127e3a4.jpg", "https://i.pinimg.com/1200x/3c/8a/3a/3c8a3a0e86a93652c6a3fd4e46b94a18.jpg", "2024-06-12 15:00:00");
-        addImage(db, 5, 6,"https://i.pinimg.com/736x/65/20/70/652070abf6c84fbeb26f84f26127e3a4.jpg", "https://i.pinimg.com/1200x/3c/8a/3a/3c8a3a0e86a93652c6a3fd4e46b94a18.jpg", "2024-06-12 16:00:00");
-        addImage(db, 6, 7,"https://i.pinimg.com/736x/65/20/70/652070abf6c84fbeb26f84f26127e3a4.jpg", "https://i.pinimg.com/1200x/3c/8a/3a/3c8a3a0e86a93652c6a3fd4e46b94a18.jpg", "2024-06-12 17:00:00");
+        addImage(db, 1, 1, "https://lh3.googleusercontent.com/drive-viewer/AKGpihYnXAYIxf1I7zqsmuXIzePq277Ih7dU-zPrdguET1R0ex1HiqibXojzWkR-rFTde74s23Z5JX41ojXmIPoJ4QnwZVWGN6bQOzQ=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihbryM3cgFbKXmTGPvj8neQgXbJXpGNKRyg3lWGpHmCIZ0gBZ4vu0bqREDykikOgxfRr3UlrweBCQRX-UUYXNGyWOkZfoQitQg=s1600-rw-v1", "2024-06-12 12:00:00");
+        addImage(db, 2, 1, "https://lh3.googleusercontent.com/drive-viewer/AKGpihZ8zCHrh_TZqtVK34tcgJSA58rB-39AY8f1V894_Z_JPy68pOUG7KpqrS0opEzKNyBviRaKZEN8zqrs8f-gNHAtS0gTGNOvBHA=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihY5N0uQ52Gejr2VgS50AeigzCmxF2oIDuSeq0GGqWjbTNkWuP2LZNdc1PgRsjUBkm_-NokEqCr5z01oJALsHUq10ymuQBw1uw=s1600-rw-v1", "2024-06-12 13:00:00");
+        addImage(db, 3, 1, "https://lh3.googleusercontent.com/drive-viewer/AKGpihaHlj_1E1QR9DUO4erX9xZdEN9E3pHfYySVMjB-xStLxs4PJthj0Rz_3z6NumCszckQGEoghAprwuBTBHOPrQ048f9MW4E2aw=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihafb5Ckmg40ThqWJFWgDiGT0zUaeus6sPq9gmROyoyb23emUUK0QObFDi14yGNMtUMmhqoFPrfAU6zrRHHVEZ0fXCUcvfjINZQ=s1600-rw-v1", "2024-06-12 14:00:00");
+        addImage(db, 4, 1, "https://lh3.googleusercontent.com/drive-viewer/AKGpihbRgGESJ3xD8zOFLFtQErlMx0mykGDn_YVuToYhVfDZ851sXBk7_Q7zv4pcnIKjcTM2xI5VBoCON3Ct8JmsPVwwXXQN6LcG2SA=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihaQq7H2PYaW8vn2XN0roBhf7tXk6iTun7SrD0jJS0ccELjfR_BM_3KDsErFkx79BgjG_C2HM7YGpYgM9QL9yZpplcWa18nqkg=s1600-rw-v1", "2024-06-12 15:00:00");
+        addImage(db, 5, 2, "https://lh3.googleusercontent.com/drive-viewer/AKGpihYnXAYIxf1I7zqsmuXIzePq277Ih7dU-zPrdguET1R0ex1HiqibXojzWkR-rFTde74s23Z5JX41ojXmIPoJ4QnwZVWGN6bQOzQ=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihbryM3cgFbKXmTGPvj8neQgXbJXpGNKRyg3lWGpHmCIZ0gBZ4vu0bqREDykikOgxfRr3UlrweBCQRX-UUYXNGyWOkZfoQitQg=s1600-rw-v1", "2024-06-12 16:00:00");
+        addImage(db, 6, 2, "https://lh3.googleusercontent.com/drive-viewer/AKGpihZ8zCHrh_TZqtVK34tcgJSA58rB-39AY8f1V894_Z_JPy68pOUG7KpqrS0opEzKNyBviRaKZEN8zqrs8f-gNHAtS0gTGNOvBHA=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihY5N0uQ52Gejr2VgS50AeigzCmxF2oIDuSeq0GGqWjbTNkWuP2LZNdc1PgRsjUBkm_-NokEqCr5z01oJALsHUq10ymuQBw1uw=s1600-rw-v1", "2024-06-12 17:00:00");
+        addImage(db, 7, 2, "https://lh3.googleusercontent.com/drive-viewer/AKGpihaHlj_1E1QR9DUO4erX9xZdEN9E3pHfYySVMjB-xStLxs4PJthj0Rz_3z6NumCszckQGEoghAprwuBTBHOPrQ048f9MW4E2aw=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihafb5Ckmg40ThqWJFWgDiGT0zUaeus6sPq9gmROyoyb23emUUK0QObFDi14yGNMtUMmhqoFPrfAU6zrRHHVEZ0fXCUcvfjINZQ=s1600-rw-v1", "2024-06-12 18:00:00");
+        addImage(db, 8, 2, "https://lh3.googleusercontent.com/drive-viewer/AKGpihbRgGESJ3xD8zOFLFtQErlMx0mykGDn_YVuToYhVfDZ851sXBk7_Q7zv4pcnIKjcTM2xI5VBoCON3Ct8JmsPVwwXXQN6LcG2SA=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihaQq7H2PYaW8vn2XN0roBhf7tXk6iTun7SrD0jJS0ccELjfR_BM_3KDsErFkx79BgjG_C2HM7YGpYgM9QL9yZpplcWa18nqkg=s1600-rw-v1", "2024-06-12 19:00:00");
+        addImage(db, 9, 3, "https://lh3.googleusercontent.com/drive-viewer/AKGpihYnXAYIxf1I7zqsmuXIzePq277Ih7dU-zPrdguET1R0ex1HiqibXojzWkR-rFTde74s23Z5JX41ojXmIPoJ4QnwZVWGN6bQOzQ=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihbryM3cgFbKXmTGPvj8neQgXbJXpGNKRyg3lWGpHmCIZ0gBZ4vu0bqREDykikOgxfRr3UlrweBCQRX-UUYXNGyWOkZfoQitQg=s1600-rw-v1", "2024-06-12 20:00:00");
+        addImage(db, 10, 3, "https://lh3.googleusercontent.com/drive-viewer/AKGpihZ8zCHrh_TZqtVK34tcgJSA58rB-39AY8f1V894_Z_JPy68pOUG7KpqrS0opEzKNyBviRaKZEN8zqrs8f-gNHAtS0gTGNOvBHA=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihY5N0uQ52Gejr2VgS50AeigzCmxF2oIDuSeq0GGqWjbTNkWuP2LZNdc1PgRsjUBkm_-NokEqCr5z01oJALsHUq10ymuQBw1uw=s1600-rw-v1", "2024-06-12 21:00:00");
+        addImage(db, 11, 3, "https://lh3.googleusercontent.com/drive-viewer/AKGpihaHlj_1E1QR9DUO4erX9xZdEN9E3pHfYySVMjB-xStLxs4PJthj0Rz_3z6NumCszckQGEoghAprwuBTBHOPrQ048f9MW4E2aw=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihafb5Ckmg40ThqWJFWgDiGT0zUaeus6sPq9gmROyoyb23emUUK0QObFDi14yGNMtUMmhqoFPrfAU6zrRHHVEZ0fXCUcvfjINZQ=s1600-rw-v1", "2024-06-12 22:00:00");
+        addImage(db, 12, 3, "https://lh3.googleusercontent.com/drive-viewer/AKGpihbRgGESJ3xD8zOFLFtQErlMx0mykGDn_YVuToYhVfDZ851sXBk7_Q7zv4pcnIKjcTM2xI5VBoCON3Ct8JmsPVwwXXQN6LcG2SA=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihaQq7H2PYaW8vn2XN0roBhf7tXk6iTun7SrD0jJS0ccELjfR_BM_3KDsErFkx79BgjG_C2HM7YGpYgM9QL9yZpplcWa18nqkg=s1600-rw-v1", "2024-06-12 23:00:00");
+        addImage(db, 13, 4, "https://lh3.googleusercontent.com/drive-viewer/AKGpihYnXAYIxf1I7zqsmuXIzePq277Ih7dU-zPrdguET1R0ex1HiqibXojzWkR-rFTde74s23Z5JX41ojXmIPoJ4QnwZVWGN6bQOzQ=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihbryM3cgFbKXmTGPvj8neQgXbJXpGNKRyg3lWGpHmCIZ0gBZ4vu0bqREDykikOgxfRr3UlrweBCQRX-UUYXNGyWOkZfoQitQg=s1600-rw-v1", "2024-06-13 00:00:00");
+        addImage(db, 14, 4, "https://lh3.googleusercontent.com/drive-viewer/AKGpihZ8zCHrh_TZqtVK34tcgJSA58rB-39AY8f1V894_Z_JPy68pOUG7KpqrS0opEzKNyBviRaKZEN8zqrs8f-gNHAtS0gTGNOvBHA=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihY5N0uQ52Gejr2VgS50AeigzCmxF2oIDuSeq0GGqWjbTNkWuP2LZNdc1PgRsjUBkm_-NokEqCr5z01oJALsHUq10ymuQBw1uw=s1600-rw-v1", "2024-06-13 01:00:00");
+        addImage(db, 15, 4, "https://lh3.googleusercontent.com/drive-viewer/AKGpihaHlj_1E1QR9DUO4erX9xZdEN9E3pHfYySVMjB-xStLxs4PJthj0Rz_3z6NumCszckQGEoghAprwuBTBHOPrQ048f9MW4E2aw=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihafb5Ckmg40ThqWJFWgDiGT0zUaeus6sPq9gmROyoyb23emUUK0QObFDi14yGNMtUMmhqoFPrfAU6zrRHHVEZ0fXCUcvfjINZQ=s1600-rw-v1", "2024-06-13 02:00:00");
+        addImage(db, 16, 4, "https://lh3.googleusercontent.com/drive-viewer/AKGpihbRgGESJ3xD8zOFLFtQErlMx0mykGDn_YVuToYhVfDZ851sXBk7_Q7zv4pcnIKjcTM2xI5VBoCON3Ct8JmsPVwwXXQN6LcG2SA=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihaQq7H2PYaW8vn2XN0roBhf7tXk6iTun7SrD0jJS0ccELjfR_BM_3KDsErFkx79BgjG_C2HM7YGpYgM9QL9yZpplcWa18nqkg=s1600-rw-v1", "2024-06-13 03:00:00");
 
         // Add initial records to FEEDBACK table
-        addFeedback(db, 1, "Very good image generation$$Somewhat well$$Neutral$$Not applicable", 5, 4,5);
-        addFeedback(db, 2, "I expected much more$$Somewhat well$$Neutral$$Not applicable", 3, 5,6);
-        addFeedback(db, 3, "Its good for your level$$Somewhat well$$Neutral$$Not applicable", 5, 6,7);
+        addFeedback(db, 1, "Its alright$$Somewhat well$$Neutral$$Not applicable", 2, 9,3);
+        addFeedback(db, 2, "I expected much more$$Somewhat well$$Neutral$$Not applicable", 3, 10,3);
+        addFeedback(db, 3, "Its good, but needs improvements$$Somewhat well$$Neutral$$Not applicable", 4, 11,3);
+        addFeedback(db, 4, "Awesome$$Somewhat well$$Neutral$$Not applicable", 5, 12,3);
+
+        addFeedback(db, 5, "Not a good image$$Somewhat well$$Neutral$$Not applicable", 2, 13,4);
+        addFeedback(db, 6, "Im okay with this$$Somewhat well$$Neutral$$Not applicable", 3, 14,4);
+        addFeedback(db, 7, "OK not a bad one$$Somewhat well$$Neutral$$Not applicable", 4, 15,4);
+        addFeedback(db, 8, "Pretty good$$Somewhat well$$Neutral$$Not applicable", 5, 16,4);
 
         // Add initial records to IMAGE_TAG table (locations)
-        addImageTag(db, 1, "8.3114, 80.4037");
-        addImageTag(db, 2, "8.3114, 80.4037");
-        addImageTag(db, 3, "8.3114, 80.4037");
-        addImageTag(db, 4, "8.3114, 80.4037");
-        addImageTag(db, 5, "8.3114, 80.4037");
-        addImageTag(db, 6, "8.3114, 80.4037");
+        addImageTag(db, 1, "8.348463, 80.404098");
+        addImageTag(db, 2, "8.347145, 80.400147");
+        addImageTag(db, 3, "8.347287, 80.398861");
+        addImageTag(db, 4, "8.347397, 80.399269");
+        addImageTag(db, 5, "8.348463, 80.404098");
+        addImageTag(db, 6, "8.347145, 80.400147");
+        addImageTag(db, 7, "8.347287, 80.398861");
+        addImageTag(db, 8, "8.347397, 80.399269");
+        addImageTag(db, 9, "8.348463, 80.404098");
+        addImageTag(db, 10, "8.347145, 80.400147");
+        addImageTag(db, 11, "8.347287, 80.398861");
+        addImageTag(db, 12, "8.347397, 80.399269");
+        addImageTag(db, 13, "8.348463, 80.404098");
+        addImageTag(db, 14, "8.347145, 80.400147");
+        addImageTag(db, 15, "8.347287, 80.398861");
+        addImageTag(db, 16, "8.347397, 80.399269");
 
         // Add initial records to ContactAdminMessage table
         addContactAdminMessage(db, 1, "Need help with account", "nimalwanasinghe@gmail.com", "Nimal Wanasinghe", false);
@@ -248,6 +267,15 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
         db.close();
         return email;
+    }
+
+    public boolean getUserEmailbyEmail(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM USER WHERE Email = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{email});
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
     }
 
     public String getUserPassword(int userid) {
@@ -471,6 +499,26 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         String[] selectionArgs = { String.valueOf(email) };
 
         db.update("USER", values, selection, selectionArgs);
+    }
+
+    public boolean getActivestatus(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int isActivated = 0;
+        String query = "SELECT Activation_Status FROM USER WHERE Email = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(email)});
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                isActivated = cursor.getInt(cursor.getColumnIndex("Activation_Status"));
+            }
+            cursor.close();
+        }
+        db.close();
+        if (isActivated == 1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public int forgotPassword(String email) {

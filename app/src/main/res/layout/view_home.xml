@@ -32,8 +32,7 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_img"
                     android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/placeholder_profile">
+                    android:layout_height="80dp">
 
                 </de.hdodenhof.circleimageview.CircleImageView>
 

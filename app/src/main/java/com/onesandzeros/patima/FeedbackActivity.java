@@ -24,11 +24,12 @@ import com.bumptech.glide.Glide;
 
 public class FeedbackActivity extends AppCompatActivity {
 
-    TextView ratingTxt, feedbackTxt;
+    TextView feedbackTxt, ratingLvlTxt;
     ImageView processedImg;
-    ImageButton submitBtn;
+    ImageButton submitBtn, starOne, starTwo, starThree, starFour, starFive;
     Spinner spinnerOne, spinnerTwo, spinnerThree;
     String spinnerOneValue = "Very well", spinnerTwoValue = "Very well", spinnerThreeValue = "Very Satisfied";
+    int rating = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +46,86 @@ public class FeedbackActivity extends AppCompatActivity {
             Toast.makeText(this, "NULL", Toast.LENGTH_SHORT).show();
         }
 
-        ratingTxt = findViewById(R.id.rating_text);
+        ratingLvlTxt = findViewById(R.id.star_lvl_desc);
         feedbackTxt = findViewById(R.id.feedback_text);
         submitBtn = findViewById(R.id.submitfeedback_Btn);
         processedImg = findViewById(R.id.processed_image);
+
         spinnerOne = findViewById(R.id.spinner_one);
         spinnerTwo = findViewById(R.id.spinner_two);
         spinnerThree = findViewById(R.id.spinner_three);
         spinnerSetup();
+
+        starOne = findViewById(R.id.star_lvl1);
+        starTwo = findViewById(R.id.star_lvl2);
+        starThree = findViewById(R.id.star_lvl3);
+        starFour = findViewById(R.id.star_lvl4);
+        starFive = findViewById(R.id.star_lvl5);
+
+        starOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                starOne.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starTwo.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                starThree.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                starFour.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                starFive.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                rating = 1;
+                ratingLvlTxt.setText("1 out of 5 : Not Good at all!");
+            }
+        });
+
+        starTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                starOne.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starTwo.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starThree.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                starFour.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                starFive.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                rating = 2;
+                ratingLvlTxt.setText("2 out of 5 : Seems Okay");
+            }
+        });
+
+        starThree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                starOne.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starTwo.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starThree.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starFour.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                starFive.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                rating = 3;
+                ratingLvlTxt.setText("3 out of 5 : Neutral");
+            }
+        });
+
+        starFour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                starOne.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starTwo.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starThree.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starFour.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starFive.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_notfilled));
+                rating = 4;
+                ratingLvlTxt.setText("4 out of 5 : Good!");
+            }
+        });
+
+        starFive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                starOne.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starTwo.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starThree.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starFour.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                starFive.setImageDrawable(getResources().getDrawable(R.drawable.ic_rating_filled));
+                rating = 5;
+                ratingLvlTxt.setText("5 out of 5 : Great!");
+            }
+        });
 
         loadImagePathsFromDatabase(img_Id);
 
@@ -109,13 +182,7 @@ public class FeedbackActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ratingString = ratingTxt.getText().toString();
-                if (!ratingString.isEmpty()) {
-                    int rating = Integer.parseInt(ratingString);
-                    checkUserinputs(finalImg_Id, rating, feedbackTxt.getText().toString());
-                } else {
-                    Toast.makeText(FeedbackActivity.this, "Please enter a valid rating", Toast.LENGTH_SHORT).show();
-                }
+                checkUserinputs(finalImg_Id, rating, feedbackTxt.getText().toString());
             }
         });
 

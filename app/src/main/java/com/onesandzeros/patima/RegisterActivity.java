@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,9 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText firstnameTxt, lastnameTxt, emailTxt, arcIdTxt, passwordTxt, confirmPasswordTxt;
     private Button registerBtn;
     private SQLiteHelper dbHelper;
+    RadioButton generalRegister, archeologistRegister;
+    RadioGroup radioGroup;
+    boolean isGeneraluser = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +70,28 @@ public class RegisterActivity extends AppCompatActivity {
         contactTxt = findViewById(R.id.contact_Txt);
         registerBtn = findViewById(R.id.register_btn); //register Btn
 
+        generalRegister = findViewById(R.id.radio_general);
+        archeologistRegister = findViewById(R.id.radio_archeologist);
+        RadioGroup radioGroup = findViewById(R.id.radio_group);
+
         setLoginLink();
         setContactLink();
+
+        // Optional: Set a listener on the radio group to handle radio button selection changes
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.radio_general) {
+                    arcIdTxt.setVisibility(View.GONE);
+                    arcIdTxt.setEnabled(false);
+                    isGeneraluser = true;
+                } else if (checkedId == R.id.radio_archeologist) {
+                    arcIdTxt.setVisibility(View.VISIBLE);
+                    arcIdTxt.setEnabled(true);
+                    isGeneraluser = false;
+                }
+            }
+        });
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,22 +170,37 @@ public class RegisterActivity extends AppCompatActivity {
         String email = emailTxt.getText().toString();
         String arcId = arcIdTxt.getText().toString();
         String password = passwordTxt.getText().toString();
-        String profilePicture = "https://wallpapersmug.com/download/320x240/484769/colorful-waves-digital-art.jpg"; // Placeholder
+        String profilePicture = "https://static.vecteezy.com/system/resources/thumbnails/001/840/612/small_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg"; // Placeholder
         boolean isAdmin = false;
         String activationLink = "https://onesandzeros.patima.api/activate/" + email; // Placeholder
         boolean activationStatus = false;
 
-        boolean result = dbHelper.addUserRecord(fname, lname, email, profilePicture, isAdmin, password, activationLink, activationStatus, arcId);
-
-        if (result) {
-            Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-            finish();
-        } else {
-            Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show();
+        if (!isGeneraluser) {
+            if (arcId.isEmpty() || arcId.length() < 3) {
+                Toast.makeText(this, "Please enter your Archeological ID", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }else{
+            arcId = "";
         }
+
+        if(!dbHelper.getUserEmailbyEmail(email)){
+            boolean result = dbHelper.addUserRecord(fname, lname, email, profilePicture, isAdmin, password, activationLink, activationStatus, arcId);
+
+            if (result) {
+                Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                finish();
+            } else {
+                Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(this, "User already exists", Toast.LENGTH_LONG).show();
+        }
+
+
     }
 
     private void setLoginLink() {

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,8 +53,32 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.ViewHo
         outputImage = dbHelper.getOutputImagepath(feedback.getImg_id());
         inputImage = dbHelper.getInputImagepath(feedback.getImg_id());
         holder.ratingTxt.setText(String.valueOf(feedback.getRating()) + " out of 5");
-        holder.usernameTxt.setText("By " + userName);
+        holder.usernameTxt.setText(userName);
         String profilepicturePath = dbHelper.getProfilepicture(userid);
+
+        int rating = feedback.getRating();
+
+        if(rating == 1){
+            holder.starOne.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+        }else if(rating == 2){
+            holder.starOne.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starTwo.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+        }else if(rating == 3){
+            holder.starOne.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starTwo.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starThree.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+        }else if(rating == 4){
+            holder.starOne.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starTwo.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starThree.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starFour.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+        }else if(rating == 5){
+            holder.starOne.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starTwo.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starThree.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starFour.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+            holder.starFive.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_rating_filled_small));
+        }
 
         String complete_feedback = feedback.getDesc();
         String[] parts = feedback.getDesc().split("\\$\\$");
@@ -122,6 +147,7 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.ViewHo
         ImageView feedbackImg;
         TextView feedbackTxt, ratingTxt, usernameTxt;
         CircleImageView feedbackuserImg;
+        ImageButton starOne, starTwo, starThree, starFour, starFive;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -130,6 +156,12 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.ViewHo
             feedbackTxt = itemView.findViewById(R.id.feedtxt_feedback);
             ratingTxt = itemView.findViewById(R.id.feedtxt_rate);
             usernameTxt = itemView.findViewById(R.id.feedtxt_username);
+
+            starOne = itemView.findViewById(R.id.star_lvl1);
+            starTwo = itemView.findViewById(R.id.star_lvl2);
+            starThree = itemView.findViewById(R.id.star_lvl3);
+            starFour = itemView.findViewById(R.id.star_lvl4);
+            starFive = itemView.findViewById(R.id.star_lvl5);
         }
     }
 }

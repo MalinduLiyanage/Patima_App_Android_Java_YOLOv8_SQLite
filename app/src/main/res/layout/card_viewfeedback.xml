@@ -21,7 +21,7 @@
                 app:cardCornerRadius="10dp"
                 android:src="@drawable/ic_welcome"
                 android:id="@+id/feedimg_img"
-                android:padding="5dp"
+                android:padding="2dp"
                 android:layout_width="100dp"
                 android:scaleType="fitCenter"
                 android:layout_height="100dp">
@@ -46,7 +46,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/feedtxt_username"
+                    android:id="@+id/feedtxt_feedback"
                     android:textColor="@color/colorPrimaryDark"
                     android:fontFamily="@font/poppins_bold"
                     android:layout_width="match_parent"
@@ -56,6 +56,62 @@
 
                 </TextView>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/star_lvl1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:src="@drawable/ic_rating_notfilled_small"
+                        android:background="@color/white">
+
+                    </ImageButton>
+
+                    <ImageButton
+                        android:id="@+id/star_lvl2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:src="@drawable/ic_rating_notfilled_small"
+                        android:background="@color/white">
+
+                    </ImageButton>
+
+                    <ImageButton
+                        android:id="@+id/star_lvl3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:src="@drawable/ic_rating_notfilled_small"
+                        android:background="@color/white">
+
+                    </ImageButton>
+
+                    <ImageButton
+                        android:id="@+id/star_lvl4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:src="@drawable/ic_rating_notfilled_small"
+                        android:background="@color/white">
+
+                    </ImageButton>
+
+                    <ImageButton
+                        android:id="@+id/star_lvl5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:src="@drawable/ic_rating_notfilled_small"
+                        android:background="@color/white">
+
+                    </ImageButton>
+
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/feedtxt_rate"
                     android:textColor="@color/colorPrimary"
@@ -63,19 +119,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="5/5"
+                    android:visibility="gone"
                     android:maxLines="1">
 
                 </TextView>
 
                 <TextView
-                    android:id="@+id/feedtxt_feedback"
+                    android:id="@+id/feedtxt_username"
                     android:textColor="@color/colorPrimary"
                     android:fontFamily="@font/poppins"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="By Malindu Liyanage"
-                    android:textStyle="italic">
+                    android:textStyle="bold">
 
                 </TextView>
 
