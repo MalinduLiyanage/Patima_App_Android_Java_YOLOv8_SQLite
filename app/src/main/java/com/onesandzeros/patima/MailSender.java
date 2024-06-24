@@ -15,8 +15,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class MailSender {
-    private String username = "ict2020067@as.rjt.ac.lk";
-    private String appPassword = "slwacusjvzcsjxee"; // Replace with your generated app password
+    private String username = "";
+    private String appPassword = ""; // Replace with your generated app password
 
     public void sendMail(String email, String subject, String message){
 
