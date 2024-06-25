@@ -7,14 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -28,10 +28,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +41,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.camera2.interop.Camera2Interop;
-import androidx.camera.camera2.interop.ExperimentalCamera2Interop;
 import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraControl;
@@ -58,7 +56,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.documentfile.provider.DocumentFile;
 
 import com.onesandzeros.patima.databinding.ActivityImageAcquisitionBinding;
 
@@ -86,11 +83,12 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
     ImageView imageView;
     private ExecutorService cameraExecutor;
     ConstraintLayout cameraContainer;
-    boolean isCameraOn = false, isCameraOff = true, isPredictable = false, tryAgain = false, autoPredict = true;
+    LinearLayout cameraBtnlayout;
+    boolean isCameraOn = false, isCameraOff = true, isPredictable = false, tryAgain = false, autoPredict = false;
     private final int IMAGE_PICK = 100;
     Bitmap bitmap, croppedBitmap, detectedBitmap;
     private ImageCapture imageCapture;
-    String capturePath = "", galleryPath = "";
+    String capturePath = "", galleryPath = "", inputImagePath = "", outputPath = "";
     TextView detected;
     private static final String TAG = "Camera";
     private static final int REQUEST_CODE_PERMISSIONS = 10;
@@ -117,6 +115,8 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
 
         CONFIDENCE_THRESHOLD = sharedPreferences.getFloat("CONFIDENCE_THRESHOLD",0);
 
+        int userId = sharedPreferences.getInt("userId", -1);
+
         galBtn = findViewById(R.id.galleryBtn);
         cameraBtn = findViewById(R.id.captureBtn);
         flashBtn = findViewById(R.id.flashBtn);
@@ -124,6 +124,9 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
         cameraContainer = findViewById(R.id.camera_container);
         detected = findViewById(R.id.detect_txt);
         autoPredictSwitch = findViewById(R.id.mode_switch);
+        cameraBtnlayout = findViewById(R.id.camera_btns);
+
+        SQLiteHelper dbHelper = new SQLiteHelper(ImageAcquisitionActivity.this);
 
         flashBtn.setEnabled(false);
         autoPredictSwitch.setEnabled(false);
@@ -144,6 +147,8 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
             latitudeString = "No Data";
             longitudeString = "No Data";
         }
+
+
 
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,12 +186,30 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
                         detector.shutdown();
                     }
                 } else if (isPredictable) {
-                    Intent intent = new Intent(ImageAcquisitionActivity.this, ProcessActivity.class);
-                    intent.putExtra("imgId", imgId);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    finish();
+                    if (detector != null) {
+                        detector.shutdown();
+                    }
+
+                    if(!inputImagePath.isEmpty() || !outputPath.isEmpty()){
+                        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date());
+                        imgId = dbHelper.addImage(userId, "https://c1.wallpaperflare.com/preview/263/75/660/buddha-image-buddha-statue-black-and-white.jpg", inputImagePath, timestamp);
+                        dbHelper.addImageTag(imgId, latitudeString + ", " + longitudeString);
+
+                        Intent intent = new Intent(ImageAcquisitionActivity.this, ProcessActivity.class);
+                        intent.putExtra("imgId", imgId);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        finish();
+
+                    }else{
+                        Toast.makeText(ImageAcquisitionActivity.this, "Image saving issue!", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 } else if (tryAgain) {
+                    if (detector != null) {
+                        detector.shutdown();
+                    }
                     Intent intent = new Intent(ImageAcquisitionActivity.this, ImageAcquisitionActivity.class);
                     startActivity(intent);
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -198,14 +221,23 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
         flashBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cameraControl = camera.getCameraControl();
                 if(isFlash == 2){
                     //Turn on camera flash
                     isFlash = 1;
                     flashBtn.setBackgroundResource(R.drawable.bg_button_flashon);
                     imageCapture.setFlashMode(ImageCapture.FLASH_MODE_ON);
                     Toast.makeText(ImageAcquisitionActivity.this, "Flash On", Toast.LENGTH_SHORT).show();
-                }else{
+                }else if(isFlash == 1){
+                    //Turn on torch
+                    isFlash = 3;
+                    flashBtn.setBackgroundResource(R.drawable.bg_button_torch);
+                    cameraControl.enableTorch(true);
+                    Toast.makeText(ImageAcquisitionActivity.this, "Torch mode", Toast.LENGTH_SHORT).show();
+
+                }else if(isFlash == 3){
                     isFlash = 2;
+                    cameraControl.enableTorch(false);
                     flashBtn.setBackgroundResource(R.drawable.bg_button_flashoff);
                     imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
                     Toast.makeText(ImageAcquisitionActivity.this, "Flash Off", Toast.LENGTH_SHORT).show();
@@ -267,7 +299,7 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
             throw new IllegalStateException("Camera initialization failed.");
         }
 
-        int rotation = binding.viewFinder.getDisplay().getRotation();
+        //int rotation = binding.viewFinder.getDisplay().getRotation();
 
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -275,13 +307,11 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
 
         preview = new Preview.Builder()
                 .setTargetAspectRatio(AspectRatio.RATIO_DEFAULT)
-                .setTargetRotation(rotation)
                 .build();
 
         imageAnalyzer = new ImageAnalysis.Builder()
                 .setTargetAspectRatio(AspectRatio.RATIO_DEFAULT)
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .setTargetRotation(rotation)
                 .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                 .build();
 
@@ -305,8 +335,6 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
 
         imageCapture = new ImageCapture.Builder()
                 .setTargetAspectRatio(AspectRatio.RATIO_DEFAULT)
-                .setTargetRotation(rotation)
-                .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
                 .build();
 
         cameraProvider.unbindAll();
@@ -336,10 +364,12 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
                 cameraControl = camera.getCameraControl();
                 cameraControl.startFocusAndMetering(action).addListener(() -> {
                     // Capture the image after focusing
-                    captureAndSaveImage();
+                    //captureAndSaveImage();
 
                     // Reset flash mode to off after capturing
-                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
+                    autoPredictSwitch.setChecked(true);
+                    autoPredict = true;
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_AUTO);
                 }, ContextCompat.getMainExecutor(this));
                 return true;
             }
@@ -491,6 +521,7 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
     }
     public void onEmptyDetectGallery() {
         tryAgain = true;
+        cameraBtnlayout.setBackground(ContextCompat.getDrawable(ImageAcquisitionActivity.this, R.color.colorPrimary));
         detected.setVisibility(View.VISIBLE);
         detected.setGravity(Gravity.CENTER);
         detected.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -506,33 +537,62 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
 
     }
     @Override
-    public void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime) {
+    public void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime, Bitmap bitmap, Bitmap detectedBitmap, boolean isautoDetected) {
         runOnUiThread(() -> {
             binding.inferenceTime.setText("Processing Delay : " + inferenceTime + " milliseconds");
             binding.overlay.setResults(boundingBoxes);
             binding.overlay.invalidate();
 
             if(autoPredict){
-                Map<String, Integer> labelCounts = new HashMap<>();
-                for (BoundingBox box : boundingBoxes) {
-                    String label = box.getClsName();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        labelCounts.put(label, labelCounts.getOrDefault(label, 0) + 1);
-                    }
-                }
+                if(isautoDetected){
+                    cameraBtnlayout.setBackground(ContextCompat.getDrawable(ImageAcquisitionActivity.this, R.color.colorPrimary));
+                    isPredictable = true;
+                    isCameraOn = false;
 
-                int headCount = 0, bodyCount = 0;
-                for (Map.Entry<String, Integer> entry : labelCounts.entrySet()) {
-                    String labelName = entry.getKey();
-                    if (labelName.contains("head")) {
-                        headCount++;
-                    } else if (labelName.contains("body")) {
-                        bodyCount++;
+                    imageView.setBackgroundResource(R.drawable.bg_placeholder);
+                    stopCamera(); // Stop camera when selecting image from gallery
+                    if (cameraContainer.getVisibility() == View.VISIBLE) {
+                        cameraContainer.setVisibility(View.GONE);
+                        imageView.setVisibility(View.VISIBLE);
                     }
-                }
 
-                if (headCount == 0 && bodyCount == 1) {
-                    captureAndSaveImage();
+                    cameraProvider.unbindAll();
+                    imageCapture.setFlashMode(ImageCapture.FLASH_MODE_OFF);
+
+                    cameraBtn.setBackgroundResource(R.drawable.bg_button_generate);
+                    galBtn.setVisibility(View.GONE);
+                    galBtn.setEnabled(false);
+                    flashBtn.setVisibility(View.GONE);
+                    flashBtn.setEnabled(false);
+                    autoPredictSwitch.setVisibility(View.GONE);
+                    autoPredictSwitch.setEnabled(false);
+
+                    imageView.setImageBitmap(detectedBitmap);
+
+                    //File saving part
+
+                    File photoFile = new File(getOutputDirectory(), new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date()) + ".jpg");
+
+                    try (FileOutputStream fos = new FileOutputStream(photoFile)) {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                        fos.flush();
+                        capturePath =  photoFile.getAbsolutePath();
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error saving bitmap", e);
+                    }
+
+                    outputPath = saveBitmapToFile(detectedBitmap);
+
+                    SharedPreferences sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);
+                    int userId = sharedPreferences.getInt("userId", -1);
+
+                    if (userId != -1) {
+                        if (outputPath != null) {
+                            inputImagePath = capturePath;
+                        }
+                    }
+
+
                 }
             }
 
@@ -577,8 +637,10 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
 
             if (headCount == 0 && bodyCount == 1) {
                 isPredictable = true;
+                cameraBtnlayout.setBackground(ContextCompat.getDrawable(ImageAcquisitionActivity.this, R.color.colorPrimary));
             } else {
                 tryAgain = true;
+                cameraBtnlayout.setBackground(ContextCompat.getDrawable(ImageAcquisitionActivity.this, R.color.colorPrimary));
             }
         });
 
@@ -591,8 +653,7 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
             int userId = sharedPreferences.getInt("userId", -1);
 
             if (userId != -1) {
-                String outputPath = saveBitmapToFile(detectedBitmap);
-                String inputImagePath;
+                outputPath = saveBitmapToFile(detectedBitmap);
                 if (outputPath != null) {
                     SQLiteHelper dbHelper = new SQLiteHelper(this);
                     if (!galleryPath.isEmpty()) {
@@ -600,15 +661,6 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
                     }else{
                         inputImagePath = capturePath;
                     }
-                    /*
-                    *
-                    * Add outPath as a parameter to the method, url is passed to show a dummy
-                    *
-                    * */
-                    String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date());
-                    imgId = dbHelper.addImage(userId, "https://c1.wallpaperflare.com/preview/263/75/660/buddha-image-buddha-statue-black-and-white.jpg", inputImagePath, timestamp);
-                    dbHelper.addImageTag(imgId, latitudeString + ", " + longitudeString);
-                    //Toast.makeText(this, imid, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -620,6 +672,7 @@ public class ImageAcquisitionActivity extends AppCompatActivity implements Detec
             autoPredictSwitch.setVisibility(View.GONE);
             autoPredictSwitch.setEnabled(false);
         } else if (tryAgain) {
+            cameraBtnlayout.setBackground(ContextCompat.getDrawable(ImageAcquisitionActivity.this, R.color.colorPrimary));
             detected.setVisibility(View.VISIBLE);
             cameraBtn.setBackgroundResource(R.drawable.bg_button_retry);
             galBtn.setVisibility(View.GONE);

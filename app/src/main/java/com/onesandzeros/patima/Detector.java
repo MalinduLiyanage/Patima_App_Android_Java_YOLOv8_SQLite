@@ -2,6 +2,10 @@ package com.onesandzeros.patima;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Build;
 import android.os.SystemClock;
 
 import org.tensorflow.lite.DataType;
@@ -20,7 +24,9 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Detector {
 
@@ -98,6 +104,10 @@ public class Detector {
     public void detect(Bitmap frame) {
         if (interpreter == null || tensorWidth == 0 || tensorHeight == 0 || numChannel == 0 || numElements == 0) return;
 
+        if(frame == null){
+            return;
+        }
+
         long inferenceTime = SystemClock.uptimeMillis();
 
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(frame, tensorWidth, tensorHeight, false);
@@ -115,8 +125,62 @@ public class Detector {
         if (bestBoxes == null) {
             detectorListener.onEmptyDetect();
         } else {
-            detectorListener.onDetect(bestBoxes, inferenceTime);
+            //detectorListener.onDetect(bestBoxes, inferenceTime, frame);
+
+            Map<String, Integer> labelCounts = new HashMap<>();
+            for (BoundingBox box : bestBoxes) {
+                String label = box.getClsName();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    labelCounts.put(label, labelCounts.getOrDefault(label, 0) + 1);
+                }
+            }
+
+            int headCount = 0, bodyCount = 0;
+            for (Map.Entry<String, Integer> entry : labelCounts.entrySet()) {
+                String labelName = entry.getKey();
+                if (labelName.contains("head")) {
+                    headCount++;
+                } else if (labelName.contains("body")) {
+                    bodyCount++;
+                }
+            }
+
+            Bitmap detectedBitmap = drawBoundingBoxes(frame.copy(Bitmap.Config.ARGB_8888, true), bestBoxes, labels);
+
+            if (headCount == 0 && bodyCount == 1) {
+                detectorListener.onDetect(bestBoxes, inferenceTime, frame, detectedBitmap,true);
+            }else{
+                detectorListener.onDetect(bestBoxes, inferenceTime, frame, detectedBitmap,false);
+            }
+
         }
+    }
+
+    private Bitmap drawBoundingBoxes(Bitmap bitmap, List<BoundingBox> boundingBoxes, List<String> labels) {
+        Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(mutableBitmap);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(8F);
+        paint.setColor(Color.GREEN);
+        paint.setTextSize(40);
+
+        for (int i = 0; i < boundingBoxes.size(); i++) {
+            BoundingBox box = boundingBoxes.get(i);
+            float left = box.getX1() * mutableBitmap.getWidth();
+            float top = box.getY1() * mutableBitmap.getHeight();
+            float right = box.getX2() * mutableBitmap.getWidth();
+            float bottom = box.getY2() * mutableBitmap.getHeight();
+
+            // Draw bounding box
+            canvas.drawRect(left, top, right, bottom, paint);
+
+            // Draw label
+            String label = labels.get(i);
+            //canvas.drawText(label, left, top - 10, paint);
+        }
+
+        return mutableBitmap;
     }
 
     public void detectGallery(Bitmap frame) {
@@ -206,7 +270,7 @@ public class Detector {
 
     public interface DetectorListener {
         void onEmptyDetect();
-        void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime);
+        void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime, Bitmap detected, Bitmap detectedBitmap, boolean isautodetected);
 
         void onDetectGallery(List<BoundingBox> bestBoxes, long inferenceTime);
 

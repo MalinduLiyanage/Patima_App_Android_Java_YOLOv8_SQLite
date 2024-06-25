@@ -109,7 +109,7 @@
                     <Switch
                         android:id="@+id/mode_switch"
                         android:switchMinWidth="60dp"
-                        android:checked="true"
+                        android:checked="false"
                         android:textOff="OFF"
                         android:textOn="ON"
                         android:layout_marginTop="10dp"
@@ -117,7 +117,7 @@
                         android:layout_marginRight="40dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Auto - Detect Statue"
+                        android:text="Auto - Capture Headless Statue"
                         android:fontFamily="@font/poppins_bold"
                         android:textStyle="bold"
                         android:textColor="@color/colorPrimaryDark"
@@ -126,6 +126,7 @@
                     </Switch>
 
                     <LinearLayout
+                        android:id="@+id/camera_btns"
                         android:padding="10dp"
                         android:background="@color/colorPrimaryDark"
                         android:layout_width="match_parent"
