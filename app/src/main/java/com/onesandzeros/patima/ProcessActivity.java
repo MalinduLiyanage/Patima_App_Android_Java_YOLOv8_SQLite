@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,15 +17,30 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 public class ProcessActivity extends AppCompatActivity {
+
+    LottieAnimationView lottie;
+    TextView processTxt;
+
+    private Handler handler = new Handler();
+    private int step = 0;
+    private String[] steps = {"Initializing...","Segmenting...", "Identifying...", "Magic Logic...", "Completed"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_process);
 
         int img_Id = 0;
+        lottie = findViewById(R.id.lottieAnimationView);
+        processTxt = findViewById(R.id.process_txt);
+
+        lottie.playAnimation();
+        lottie.loop(true);
+
+        updateText();
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -44,7 +61,28 @@ public class ProcessActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish(); // Finish the activity
             }
-        }, 5000); // 5000 milliseconds = 5 seconds
+        }, 10000); // 10000 milliseconds = 10 seconds
 
+    }
+
+    private void updateText() {
+        if (step < steps.length) {
+            processTxt.setText(steps[step]);
+            applySlideAnimation();
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    step++;
+                    updateText();
+                }
+            }, 2000);
+        }
+    }
+
+    private void applySlideAnimation() {
+        TranslateAnimation animate = new TranslateAnimation(-(processTxt.getWidth()), 0, 0, 0);
+        animate.setDuration(500); // Animation duration
+        processTxt.startAnimation(animate);
     }
 }

@@ -27,7 +27,6 @@ public class ParametersActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_parameters);
 
         sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);

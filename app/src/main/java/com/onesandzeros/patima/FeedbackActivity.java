@@ -28,7 +28,7 @@ public class FeedbackActivity extends AppCompatActivity {
     ImageView processedImg;
     ImageButton submitBtn, starOne, starTwo, starThree, starFour, starFive;
     Spinner spinnerOne, spinnerTwo, spinnerThree;
-    String spinnerOneValue = "Very well", spinnerTwoValue = "Very well", spinnerThreeValue = "Very Satisfied";
+    String spinnerOneValue = "Not accurate", spinnerTwoValue = "Not accurate", spinnerThreeValue = "Not accurate";
     int rating = 0;
 
     @Override
@@ -211,7 +211,7 @@ public class FeedbackActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         spinnerOne.setAdapter(adapter);
         spinnerTwo.setAdapter(adapter);
-        spinnerThree.setAdapter(adapterthree);
+        spinnerThree.setAdapter(adapter);
     }
 
     private void loadImagePathsFromDatabase(int imgId) {

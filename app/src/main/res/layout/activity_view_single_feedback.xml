@@ -32,7 +32,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:id="@+id/processed_image"
+                android:layout_width="200dp"
+                android:layout_height="250dp">
+
+            </ImageView>
+
             <ScrollView
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -41,15 +51,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_gravity="center"
-                        android:layout_marginTop="20dp"
-                        android:id="@+id/processed_image"
-                        android:layout_width="200dp"
-                        android:layout_height="250dp">
-
-                    </ImageView>
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -57,7 +58,7 @@
                         android:layout_marginRight="15dp"
                         android:layout_marginTop="15dp"
                         android:fontFamily="@font/poppins_bold"
-                        android:text="Rating"
+                        android:text="Overall Rating"
                         android:textAlignment="center"
                         android:textColor="@color/colorPrimaryDark">
 
@@ -145,7 +146,7 @@
                         android:layout_marginRight="15dp"
                         android:layout_marginTop="25dp"
                         android:fontFamily="@font/poppins_bold"
-                        android:text="How well does the generated head matches with the Statue?"
+                        android:text="Does the textures and colors of the generated head matches with the rest of the Statue?"
                         android:textColor="@color/colorPrimaryDark">
 
                     </TextView>
@@ -177,7 +178,7 @@
                         android:layout_marginRight="15dp"
                         android:layout_marginTop="5dp"
                         android:fontFamily="@font/poppins_bold"
-                        android:text="How realiscated is the generated head?"
+                        android:text="Does the scale and measurements of the generated head matches with the rest of the Statue?"
                         android:textColor="@color/colorPrimaryDark">
 
                     </TextView>
@@ -209,7 +210,7 @@
                         android:layout_marginRight="15dp"
                         android:layout_marginTop="5dp"
                         android:fontFamily="@font/poppins_bold"
-                        android:text="Mention your satisfaction about the Generative Head"
+                        android:text="Does the placement and elevation of the generated head matches with the rest of the Statue?"
                         android:textColor="@color/colorPrimaryDark">
 
                     </TextView>

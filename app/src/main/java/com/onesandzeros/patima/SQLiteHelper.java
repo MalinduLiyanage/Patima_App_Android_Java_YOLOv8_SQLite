@@ -148,15 +148,15 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         addImage(db, 16, 4, "https://lh3.googleusercontent.com/drive-viewer/AKGpihbRgGESJ3xD8zOFLFtQErlMx0mykGDn_YVuToYhVfDZ851sXBk7_Q7zv4pcnIKjcTM2xI5VBoCON3Ct8JmsPVwwXXQN6LcG2SA=s1600-rw-v1", "https://lh3.googleusercontent.com/drive-viewer/AKGpihaQq7H2PYaW8vn2XN0roBhf7tXk6iTun7SrD0jJS0ccELjfR_BM_3KDsErFkx79BgjG_C2HM7YGpYgM9QL9yZpplcWa18nqkg=s1600-rw-v1", "2024-06-13 03:00:00");
 
         // Add initial records to FEEDBACK table
-        addFeedback(db, 1, "Its alright$$Somewhat well$$Neutral$$Not applicable", 2, 9,3);
-        addFeedback(db, 2, "I expected much more$$Somewhat well$$Neutral$$Not applicable", 3, 10,3);
-        addFeedback(db, 3, "Its good, but needs improvements$$Somewhat well$$Neutral$$Not applicable", 4, 11,3);
-        addFeedback(db, 4, "Awesome$$Somewhat well$$Neutral$$Not applicable", 5, 12,3);
+        addFeedback(db, 1, "Its alright$$Slightly accurate$$Slightly accurate$$Mostly accurate", 2, 9,3);
+        addFeedback(db, 2, "I expected much more$$Moderately accurate$$Moderately accurate$$Mostly accurate", 3, 10,3);
+        addFeedback(db, 3, "Its good, but needs improvements$$Mostly accurate$$Mostly accurate$$Mostly accurate", 4, 11,3);
+        addFeedback(db, 4, "Awesome$$Completely accurate$$Completely accurate$$Completely accurate", 5, 12,3);
 
-        addFeedback(db, 5, "Not a good image$$Somewhat well$$Neutral$$Not applicable", 2, 13,4);
-        addFeedback(db, 6, "Im okay with this$$Somewhat well$$Neutral$$Not applicable", 3, 14,4);
-        addFeedback(db, 7, "OK not a bad one$$Somewhat well$$Neutral$$Not applicable", 4, 15,4);
-        addFeedback(db, 8, "Pretty good$$Somewhat well$$Neutral$$Not applicable", 5, 16,4);
+        addFeedback(db, 5, "Not a good image$$Slightly accurate$$Slightly accurate$$Mostly accurate", 2, 13,4);
+        addFeedback(db, 6, "Im okay with this$$Moderately accurate$$Moderately accurate$$Mostly accurate", 3, 14,4);
+        addFeedback(db, 7, "OK not a bad one$$Mostly accurate$$Mostly accurate$$Mostly accurate", 4, 15,4);
+        addFeedback(db, 8, "Pretty good$$Completely accurate$$Completely accurate$$Completely accurate", 5, 16,4);
 
         // Add initial records to IMAGE_TAG table (locations)
         addImageTag(db, 1, "8.348463, 80.404098");
