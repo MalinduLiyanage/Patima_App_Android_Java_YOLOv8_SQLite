@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@color/colorPrimary"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InternetActivity">
+
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_margin="10dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_welcome">
+
+                </ImageView>
+
+                <TextView
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/brand_text_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:textAlignment="center"
+                    android:fontFamily="@font/poppins_bold"
+                    android:maxLines="1"
+                    android:text="Connection Request"
+                    android:textColor="@color/colorPrimaryDark">
+
+                </TextView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/cameraLayout"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_gravity="center"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@drawable/ic_wifi">
+
+                        </ImageView>
+
+                        <TextView
+                            android:textColor="@color/colorPrimaryDark"
+                            android:fontFamily="@font/poppins_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:text="WiFi">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:textSize="16sp"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/colorAccent"
+                        android:fontFamily="@font/poppins"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Please connect to a WiFi Network.">
+
+                    </TextView>
+
+                    <LinearLayout
+                        android:id="@+id/locLayout"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_gravity="center"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@drawable/ic_mobiledata">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/loc_text"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:fontFamily="@font/poppins_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="2"
+                            android:text="Mobile Data">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:textSize="16sp"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/colorAccent"
+                        android:fontFamily="@font/poppins"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Else you can connect to your Data network.\n(Data charges may apply)">
+
+                    </TextView>
+
+                    <LinearLayout
+                        android:id="@+id/storageLayout"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_gravity="center"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="8dp"
+                            android:background="@drawable/ic_troubleshoot">
+
+                        </ImageView>
+
+                        <TextView
+                            android:textColor="@color/colorPrimaryDark"
+                            android:fontFamily="@font/poppins_bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:text="Troubleshoot">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:textSize="16sp"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/colorAccent"
+                        android:fontFamily="@font/poppins"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="If you have enabled WiFi or Data, please troubleshoot connection issues.">
+
+                    </TextView>
+
+
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
