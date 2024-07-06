@@ -6,12 +6,15 @@ import static java.lang.Math.toRadians;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -55,11 +58,13 @@ public class SummaryActivity extends AppCompatActivity {
     SQLiteHelper dbHelper;
     private static final double EARTH_RADIUS_KM = 6371.0;
     double selectedImg_lat, selectedImg_lon;
+    ImageButton returnBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         imgId = getIntent().getIntExtra("imgId", 0);
         basePath = getIntent().getStringExtra("base_path");
@@ -77,6 +82,14 @@ public class SummaryActivity extends AppCompatActivity {
         nearbyTxt = findViewById(R.id.nearby_txt);
         locationTxt = findViewById(R.id.loc_text);
         locationName = findViewById(R.id.loc_name);
+        returnBtn = findViewById(R.id.return_button);
+
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         SharedPreferences sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);
         String userTypest = sharedPreferences.getString("userType", "");

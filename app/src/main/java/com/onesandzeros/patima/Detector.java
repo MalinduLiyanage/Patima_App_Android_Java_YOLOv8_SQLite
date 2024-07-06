@@ -172,12 +172,8 @@ public class Detector {
             float right = box.getX2() * mutableBitmap.getWidth();
             float bottom = box.getY2() * mutableBitmap.getHeight();
 
-            // Draw bounding box
             canvas.drawRect(left, top, right, bottom, paint);
 
-            // Draw label
-            String label = labels.get(i);
-            //canvas.drawText(label, left, top - 10, paint);
         }
 
         return mutableBitmap;
@@ -203,7 +199,32 @@ public class Detector {
         if (bestBoxes == null) {
             detectorListener.onEmptyDetectGallery();
         } else {
-            detectorListener.onDetectGallery(bestBoxes, inferenceTime);
+
+            Map<String, Integer> labelCounts = new HashMap<>();
+            for (BoundingBox box : bestBoxes) {
+                String label = box.getClsName();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    labelCounts.put(label, labelCounts.getOrDefault(label, 0) + 1);
+                }
+            }
+
+            int headCount = 0, bodyCount = 0;
+            for (Map.Entry<String, Integer> entry : labelCounts.entrySet()) {
+                String labelName = entry.getKey();
+                if (labelName.contains("head")) {
+                    headCount++;
+                } else if (labelName.contains("body")) {
+                    bodyCount++;
+                }
+            }
+
+            Bitmap detectedBitmap = drawBoundingBoxes(frame.copy(Bitmap.Config.ARGB_8888, true), bestBoxes, labels);
+
+            if (headCount == 0 && bodyCount == 1) {
+                detectorListener.onDetectGallery(bestBoxes, inferenceTime, detectedBitmap,true);
+            }else{
+                detectorListener.onDetectGallery(bestBoxes, inferenceTime, detectedBitmap,false);
+            }
         }
     }
 
@@ -272,7 +293,7 @@ public class Detector {
         void onEmptyDetect();
         void onDetect(List<BoundingBox> boundingBoxes, long inferenceTime, Bitmap detected, Bitmap detectedBitmap, boolean isautodetected);
 
-        void onDetectGallery(List<BoundingBox> bestBoxes, long inferenceTime);
+        void onDetectGallery(List<BoundingBox> bestBoxes, long inferenceTime, Bitmap detectedBitmap, boolean isdetected);
 
         void onEmptyDetectGallery();
     }

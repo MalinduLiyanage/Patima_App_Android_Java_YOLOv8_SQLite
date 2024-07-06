@@ -141,7 +141,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
                             android:layout_marginRight="15dp"
-                            android:background="@drawable/bg_button_flashoff">
+                            android:background="@drawable/bg_button_flashoff_disabled">
 
                         </ImageButton>
 
@@ -167,6 +167,7 @@
                         </ImageButton>
 
                     </LinearLayout>
+
 
                     <TextView
                         android:id="@+id/detect_txt"

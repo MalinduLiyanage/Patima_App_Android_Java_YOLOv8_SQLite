@@ -3,8 +3,10 @@ package com.onesandzeros.patima;
 import static java.lang.Integer.parseInt;
 
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -18,7 +20,7 @@ public class ParametersActivity extends AppCompatActivity {
 
     private SeekBar thresholdSlider;
     private TextView thresholdValueText;
-    private ImageButton saveBtn, resetBtn;
+    private ImageButton saveBtn, resetBtn, returnBtn;
     private float DETECT_THRESHOLD;
     final private float RESET_DETECT_THRESHOLD = 0.6F;
     SharedPreferences sharedPreferences;
@@ -28,6 +30,7 @@ public class ParametersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parameters);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);
 
@@ -37,6 +40,14 @@ public class ParametersActivity extends AppCompatActivity {
 
         saveBtn = findViewById(R.id.save_btn);
         resetBtn = findViewById(R.id.reset_btn);
+        returnBtn = findViewById(R.id.return_button);
+
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override

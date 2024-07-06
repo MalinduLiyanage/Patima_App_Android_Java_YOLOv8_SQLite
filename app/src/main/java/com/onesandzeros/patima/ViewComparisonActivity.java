@@ -2,11 +2,13 @@ package com.onesandzeros.patima;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -18,13 +20,14 @@ import com.bumptech.glide.Glide;
 public class ViewComparisonActivity extends AppCompatActivity {
 
     ImageView baseImg, processedImg;
-    ImageButton feedbackBtn, homeBtn;
+    ImageButton feedbackBtn, homeBtn, returnBtn;
     int img_Id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_comparison);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         SharedPreferences sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);
         String userTypest = sharedPreferences.getString("userType", "");
@@ -40,6 +43,14 @@ public class ViewComparisonActivity extends AppCompatActivity {
         processedImg = findViewById(R.id.processed_image);
         feedbackBtn = findViewById(R.id.feedback_Btn);
         homeBtn = findViewById(R.id.home_Btn);
+        returnBtn = findViewById(R.id.return_button);
+
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         if (userTypest.equals("General Public User")) {
             feedbackBtn.setVisibility(View.GONE);
@@ -59,8 +70,16 @@ public class ViewComparisonActivity extends AppCompatActivity {
                         return true;
 
                     case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
                         baseImg.setVisibility(View.GONE);
                         processedImg.setVisibility(View.VISIBLE);
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        // Optional: You can add behavior for ACTION_MOVE if needed.
+                        // For example, keep the base image visible while moving.
+                        baseImg.setVisibility(View.VISIBLE);
+                        processedImg.setVisibility(View.GONE);
                         return true;
                 }
                 return false;

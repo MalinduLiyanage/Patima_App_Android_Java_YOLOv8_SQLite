@@ -1,10 +1,13 @@
 package com.onesandzeros.patima;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -32,6 +36,7 @@ public class ProcessActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_process);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         int img_Id = 0;
         lottie = findViewById(R.id.lottieAnimationView);
@@ -63,6 +68,14 @@ public class ProcessActivity extends AppCompatActivity {
             }
         }, 10000); // 10000 milliseconds = 10 seconds
 
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this,onBackPressedCallback);
+
     }
 
     private void updateText() {
@@ -85,4 +98,5 @@ public class ProcessActivity extends AppCompatActivity {
         animate.setDuration(500); // Animation duration
         processTxt.startAnimation(animate);
     }
+
 }

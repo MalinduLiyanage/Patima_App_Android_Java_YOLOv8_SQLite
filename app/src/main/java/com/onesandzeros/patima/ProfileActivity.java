@@ -3,6 +3,7 @@ package com.onesandzeros.patima;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,7 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     EditText userFname, userLname, userEmail, userPass, userNewPass, userConfirmNewPass, userType, userAdminrights;
     Button editBtn, delBtn;
-    ImageButton userPic;
+    ImageButton userPic, returnBtn;
     SQLiteHelper dbHelper;
     LinearLayout newpassContainer, confirmPassContainer;
     String changedpicture = null;
@@ -43,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         dbHelper = new SQLiteHelper(this);
         View parentLayout = findViewById(android.R.id.content);
@@ -60,6 +63,22 @@ public class ProfileActivity extends AppCompatActivity {
         confirmPassContainer = findViewById(R.id.confirmNew_pass);
         userNewPass = findViewById(R.id.new_pass_text);
         userConfirmNewPass = findViewById(R.id.confirm_new_pass_text);
+        returnBtn = findViewById(R.id.return_button);
+
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        SharedPreferences sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);
+        String userTypest = sharedPreferences.getString("userType","");
+
+        if (!userTypest.equals("General Public User")) {
+            delBtn.setVisibility(View.GONE);
+            delBtn.setEnabled(false);
+        }
 
         initialState();
 

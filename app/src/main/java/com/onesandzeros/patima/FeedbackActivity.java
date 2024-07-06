@@ -2,10 +2,12 @@ package com.onesandzeros.patima;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -26,7 +28,7 @@ public class FeedbackActivity extends AppCompatActivity {
 
     TextView feedbackTxt, ratingLvlTxt;
     ImageView processedImg;
-    ImageButton submitBtn, starOne, starTwo, starThree, starFour, starFive;
+    ImageButton submitBtn, starOne, starTwo, starThree, starFour, starFive, returnBtn;
     Spinner spinnerOne, spinnerTwo, spinnerThree;
     String spinnerOneValue = "Not accurate", spinnerTwoValue = "Not accurate", spinnerThreeValue = "Not accurate";
     int rating = 0;
@@ -35,6 +37,7 @@ public class FeedbackActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         int img_Id = 0;
 
@@ -61,6 +64,15 @@ public class FeedbackActivity extends AppCompatActivity {
         starThree = findViewById(R.id.star_lvl3);
         starFour = findViewById(R.id.star_lvl4);
         starFive = findViewById(R.id.star_lvl5);
+
+        returnBtn = findViewById(R.id.return_button);
+
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         starOne.setOnClickListener(new View.OnClickListener() {
             @Override

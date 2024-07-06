@@ -1,10 +1,13 @@
 package com.onesandzeros.patima;
 
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,14 +29,24 @@ public class ViewFeedbackActivity extends AppCompatActivity {
     private FeedbackAdapter feedbackAdapter;
     SQLiteHelper dbHelper;
     TextView detectTxt;
+    ImageButton returnBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_feedback);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         detectTxt = findViewById(R.id.detect_Txt);
         feedbackContainer = findViewById(R.id.feedback_container);
+        returnBtn = findViewById(R.id.return_button);
+
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         SharedPreferences sharedPreferences = getSharedPreferences("Startup", MODE_PRIVATE);
         int userid = sharedPreferences.getInt("userId",0);

@@ -1,7 +1,10 @@
 package com.onesandzeros.patima;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,7 +25,7 @@ public class ViewSingleFeedbackActivity extends AppCompatActivity {
 
     ImageView processedImg;
     EditText spinnerOneTxt, spinnerTwoTxt, spinnerThreeTxt, feedbackTxt;
-    ImageButton starOne, starTwo, starThree, starFour, starFive;
+    ImageButton starOne, starTwo, starThree, starFour, starFive, returnBtn;
     TextView ratingLvlTxt;
     SQLiteHelper dbHelper;
 
@@ -30,6 +33,7 @@ public class ViewSingleFeedbackActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_feedback);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         processedImg = findViewById(R.id.processed_image);
         spinnerOneTxt = findViewById(R.id.spinner_one);
@@ -37,6 +41,14 @@ public class ViewSingleFeedbackActivity extends AppCompatActivity {
         spinnerThreeTxt = findViewById(R.id.spinner_three);
         feedbackTxt = findViewById(R.id.feedback_text);
         ratingLvlTxt = findViewById(R.id.star_lvl_desc);
+        returnBtn = findViewById(R.id.return_button);
+
+        returnBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         starOne = findViewById(R.id.star_lvl1);
         starTwo = findViewById(R.id.star_lvl2);
