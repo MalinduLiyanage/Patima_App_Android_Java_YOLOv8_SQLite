@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -59,6 +60,8 @@ public class SummaryActivity extends AppCompatActivity {
     private static final double EARTH_RADIUS_KM = 6371.0;
     double selectedImg_lat, selectedImg_lon;
     ImageButton returnBtn;
+    ImageView feedbackexpanderBtn;
+    boolean areFeedbacksexpanded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,7 @@ public class SummaryActivity extends AppCompatActivity {
         locationTxt = findViewById(R.id.loc_text);
         locationName = findViewById(R.id.loc_name);
         returnBtn = findViewById(R.id.return_button);
+        feedbackexpanderBtn = findViewById(R.id.btn_feedback_expand);
 
         returnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +118,32 @@ public class SummaryActivity extends AppCompatActivity {
                 Intent intent = new Intent(SummaryActivity.this, FeedbackActivity.class);
                 intent.putExtra("imgId", imgId);
                 startActivity(intent);
+            }
+        });
+
+        feedbackexpanderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!areFeedbacksexpanded){
+                    areFeedbacksexpanded = true;
+                    feedbackexpanderBtn.setImageResource(R.drawable.ic_arrow_down);
+
+                    ViewGroup.LayoutParams params = feedbackContainer.getLayoutParams();
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    feedbackContainer.setLayoutParams(params);
+
+                }else{
+                    areFeedbacksexpanded = false;
+                    feedbackexpanderBtn.setImageResource(R.drawable.ic_arrow_right);
+
+                    int dpValue = 100;
+                    float density = getResources().getDisplayMetrics().density;
+                    int heightInPixels = (int) (dpValue * density);
+                    ViewGroup.LayoutParams layoutParams = feedbackContainer.getLayoutParams();
+                    layoutParams.height = heightInPixels;
+                    feedbackContainer.setLayoutParams(layoutParams);
+
+                }
             }
         });
 
