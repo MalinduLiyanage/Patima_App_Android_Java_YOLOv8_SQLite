@@ -104,6 +104,8 @@ public class SummaryActivity extends AppCompatActivity {
             feedbackTextShow.setVisibility(View.GONE);
             feedbackContainer.setVisibility(View.GONE);
             feedbackBtn.setEnabled(false);
+            detectTxt.setVisibility(View.GONE);
+            feedbackexpanderBtn.setVisibility(View.GONE);
 
         }else{
             loaduserFeedbacks(userid);
